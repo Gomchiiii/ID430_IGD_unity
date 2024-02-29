@@ -1,0 +1,4 @@
+repository "IGD@imjayeong0421@cloud"
+  path "/"
+    br "/main"
+    co "/main"
