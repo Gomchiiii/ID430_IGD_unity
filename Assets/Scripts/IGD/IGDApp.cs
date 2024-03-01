@@ -60,7 +60,7 @@ namespace IGD {
             this.mMouseEventSource.setEventListener(this.mEventListener);
 
             // Call the methods you write in IGDPlotter.HW.cs here.
-            this.mPlotter.CA1_2();
+            this.mPlotter.CA1_3();
         }
             
         void Update() {
