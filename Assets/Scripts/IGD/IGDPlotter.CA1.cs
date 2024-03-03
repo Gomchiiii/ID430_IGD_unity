@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using XAppObject;
 
@@ -47,15 +48,6 @@ namespace IGD {
             // Draw vector PQ
             this.drawArrow3D(P, Q);
 
-            /*
-            //Label vector P
-            Vector2 labelPosAB = (A + B) / 2f;
-            float offset = 50f;
-            labelPosAB += Vector2.up * offset;
-            labelPosAB += Vector2.left * (offset * 0.5f);
-            this.addImage2D("Formulas/W01_vecAB", labelPosAB, 0.7f);
-            */
-
             //Label P and Q
             this.addImage3D("Letters/P", P + Vector3.up * offset3, 0.5f);
             this.addImage3D("Formulas/C01_dotP", P - Vector3.up * offset3, 0.3f);
@@ -96,11 +88,11 @@ namespace IGD {
             Vector3 k = Vector3.up;
 
             Vector3 xAxisEnd = i * axisLength;
-            Vector3 xAxisStart = -i * axisLength * 0.15f;
+            Vector3 xAxisStart = - i * axisLength * 0.15f;
             Vector3 yAxisEnd = j * axisLength;
-            Vector3 yAxisStart = -j * axisLength * 0.15f;
+            Vector3 yAxisStart = - j * axisLength * 0.15f;
             Vector3 zAxisEnd = k * axisLength;
-            Vector3 zAxisStart = -k * axisLength * 0.15f;
+            Vector3 zAxisStart = - k * axisLength * 0.15f;
 
             this.drawArrow3D(xAxisStart, xAxisEnd);
             this.drawArrow3D(yAxisStart, yAxisEnd);
@@ -112,7 +104,7 @@ namespace IGD {
             this.addImage3D("Letters/z", zAxisEnd + Vector3.up * offset3);
 
             // Label Orientation
-            this.addImage3D("Letters/O", -Vector3.forward * offset3 + Vector3.up * offset3, 0.7f);
+            this.addImage3D("Letters/O", - Vector3.forward * offset3 + Vector3.up * offset3, 0.7f);
 
             //Draw vector i, j, k
             Vector3 iEnd = i * 0.3f;
@@ -133,7 +125,7 @@ namespace IGD {
             this.drawArrow3D(Vector3.zero, v);
 
             //Label vec(v)
-            this.addImage3D("Formulas/C01_vecv", v + Vector3.up * offset3, 0.3f);
+            this.addImage3D("Formulas/C01_vecvcomp", v + Vector3.up * offset3, 0.3f);
             this.addImage3D("Formulas/C01_v1iv2jv3k", v - Vector3.up * offset3, 0.3f);
 
             //Draw Dashed Lines v1, v2, v3
@@ -173,11 +165,11 @@ namespace IGD {
             Vector3 k = Vector3.up;
 
             Vector3 xAxisEnd = i * axisLength;
-            Vector3 xAxisStart = -i * axisLength * 0.15f;
+            Vector3 xAxisStart = - i * axisLength * 0.15f;
             Vector3 yAxisEnd = j * axisLength;
-            Vector3 yAxisStart = -j * axisLength * 0.15f;
+            Vector3 yAxisStart = - j * axisLength * 0.15f;
             Vector3 zAxisEnd = k * axisLength;
-            Vector3 zAxisStart = -k * axisLength * 0.15f;
+            Vector3 zAxisStart = - k * axisLength * 0.15f;
 
             this.drawArrow3D(xAxisStart, xAxisEnd);
             this.drawArrow3D(yAxisStart, yAxisEnd);
@@ -189,7 +181,7 @@ namespace IGD {
             this.addImage3D("Letters/z", zAxisEnd + Vector3.up * offset3);
 
             // Label Orientation
-            this.addImage3D("Letters/O", -Vector3.forward * offset3 + Vector3.up * offset3, 0.7f);
+            this.addImage3D("Letters/O", - Vector3.forward * offset3 + Vector3.up * offset3, 0.7f);
 
             //Draw vector i, j, k
             Vector3 iEnd = i * 0.3f;
@@ -217,30 +209,126 @@ namespace IGD {
             //Draw vector alpha1i, alpha2j, alpha3k
             Vector3 alpha1 = Vector3.Scale(Vector3.right, P);
             Vector3 alpha2 = alpha1 + Vector3.Scale(Vector3.forward, P);
-            
+
             this.drawArrow3D(Vector3.zero, alpha1, 1f, Color.red);
             this.drawArrow3D(alpha1, alpha2, 1f, Color.red);
             this.drawArrow3D(alpha2, P, 1f, Color.red);
 
+            //Label vector alpha1i, alpha2j, alpha3k
+            this.addImage3D("Formulas/C01_alpha1i", alpha1 * 0.5f + Vector3.up * offset3, 0.5f);
+            this.addImage3D("Formulas/C01_alpha2j", (alpha1 + alpha2) * 0.5f + Vector3.up * offset3 , 0.5f);
+            this.addImage3D("Formulas/C01_alpha3k", (P + alpha2) * 0.5f + Vector3.forward * offset3, 0.5f);
+
             //Draw Dashed Line 
             this.drawDashedLine3D(Vector3.Scale(Vector3.forward, P), alpha2, 0.5f, Color.red);
 
-            ////Label 
-            //this.addImage3D("Formulas/C01_v1i", v1 * 0.5f, 0.5f);
-            //this.addImage3D("Formulas/C01_v2j", (v - v0) * 0.5f, 0.5f);
-            //this.addImage3D("Formulas/C01_v3k", v2 * 0.5f, 0.5f);
         }
         // CA1-4: Draw Fig.4 in the assignment document
         public void CA1_4() {
-            /*
-            Impelment here
-            */
+
+            //Draw x, y, z axes.
+            float axisLength = 1f;
+
+            //opposite with unity coordinate system
+            Vector3 i = Vector3.right;
+            Vector3 j = Vector3.forward;
+            Vector3 k = Vector3.up;
+
+            Vector3 xAxisEnd = i * axisLength;
+            Vector3 xAxisStart = - i * axisLength * 0.15f;
+            Vector3 yAxisEnd = j * axisLength;
+            Vector3 yAxisStart = - j * axisLength * 0.15f;
+            Vector3 zAxisEnd = k * axisLength;
+            Vector3 zAxisStart = - k * axisLength * 0.15f;
+
+            this.drawArrow3D(xAxisStart, xAxisEnd);
+            this.drawArrow3D(yAxisStart, yAxisEnd);
+            this.drawArrow3D(zAxisStart, zAxisEnd);
+
+            // Label x, y, z;
+            this.addImage3D("Letters/x", xAxisEnd + Vector3.right * offset3);
+            this.addImage3D("Letters/y", yAxisEnd + Vector3.forward * offset3);
+            this.addImage3D("Letters/z", zAxisEnd + Vector3.up * offset3);
+
+            // Label Orientation
+            this.addImage3D("Letters/O", - Vector3.forward * offset3 + Vector3.up * offset3, 0.7f);
+
+            // Draw dots A and B 
+            Vector3 A = new Vector3(axisLength * 0.5f, axisLength * 0.5f, axisLength * 0.2f);
+            Vector3 B = new Vector3( - axisLength * 0.1f, axisLength * 0.6f, axisLength * 0.3f);
+            this.drawDot3D(A);
+            this.drawDot3D(B);
+
+            //Label dots A and B
+            this.addImage3D("Letters/A", A + Vector3.up * offset3, 0.5f);
+            this.addImage3D("Letters/B", B + Vector3.up * offset3, 0.5f);
+
+            // Draw vector u1, u2
+            this.drawArrow3D(Vector3.zero, A);
+            this.drawArrow3D(Vector3.zero, B);
+
+            //Label vector u1, u2
+            this.addImage3D("Formulas/C01_vecu1", A - Vector3.up * offset3 * 2, 0.5f);
+            this.addImage3D("Formulas/C01_vecu2", B - Vector3.up * offset3 * 2, 0.5f);
+
+            //Linear interpolation of vector u1 and u2
+            Vector3 ABStartPoint = ( - 1f) * A + 2f * B;
+            Vector3 ABEndPoint = 2f * A + (-1f) * B;
+
+            this.drawLine3D(ABStartPoint, ABEndPoint, 0.5f);
+            this.drawLine3D(A, B, 1.2f, Color.red);
+
         }
         // CA1-5: Draw Fig.5 in the assignment document
         public void CA1_5() {
-            /*
-            Impelment here
-            */
+            //Draw x, y, z axes.
+            float axisLength = 1f;
+
+            //opposite with unity coordinate system
+            Vector3 i = Vector3.right;
+            Vector3 j = Vector3.forward;
+            Vector3 k = Vector3.up;
+
+            Vector3 xAxisEnd = i * axisLength;
+            Vector3 xAxisStart = - i * axisLength * 0.15f;
+            Vector3 yAxisEnd = j * axisLength;
+            Vector3 yAxisStart = - j * axisLength * 0.15f;
+            Vector3 zAxisEnd = k * axisLength;
+            Vector3 zAxisStart = - k * axisLength * 0.15f;
+
+            this.drawArrow3D(xAxisStart, xAxisEnd);
+            this.drawArrow3D(yAxisStart, yAxisEnd);
+            this.drawArrow3D(zAxisStart, zAxisEnd);
+
+            // Label x, y, z;
+            this.addImage3D("Letters/x", xAxisEnd + Vector3.right * offset3);
+            this.addImage3D("Letters/y", yAxisEnd + Vector3.forward * offset3);
+            this.addImage3D("Letters/z", zAxisEnd + Vector3.up * offset3);
+
+            // Label Orientation
+            this.addImage3D("Letters/O", - Vector3.forward * offset3 + Vector3.up * offset3, 0.7f);
+
+            // Draw Vectors u1, u2, u3 
+            Vector3 A = new Vector3(-axisLength * 0.1f, axisLength * 0.3f, axisLength * 0.3f);
+            Vector3 B = new Vector3( - axisLength * 0.3f, axisLength * 0.6f, axisLength * 0.4f);
+            Vector3 C = new Vector3(axisLength * 0.5f, axisLength * 0.8f, axisLength * 0.2f);
+
+            this.drawArrow3D(Vector3.zero, A);
+            this.drawArrow3D(Vector3.zero, B);
+            this.drawArrow3D(Vector3.zero, C);
+
+            //Label vector u1, u2
+            this.addImage3D("Formulas/C01_vecu1", A - Vector3.up * offset3 * 2, 0.5f);
+            this.addImage3D("Formulas/C01_vecu2", B - Vector3.up * offset3 * 2, 0.5f);
+            this.addImage3D("Formulas/C01_vecu3", C - Vector3.up * offset3 * 2, 0.5f);
+
+            //Draw Triangle
+            List<Vector3> Triangle = new();
+            Triangle.Add(A);
+            Triangle.Add(B);
+            Triangle.Add(C);
+            Triangle.Add(A);
+            this.drawPolyline3D(Triangle, 1f, Color.red);
         }
     }
 }
