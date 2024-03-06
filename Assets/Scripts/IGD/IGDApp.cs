@@ -13,7 +13,6 @@ namespace IGD {
             return this.m2DCameraPerson;
         }
         private XScreen mScreen = null;
-        private IGDPlotter mPlotter = null;
         
         private IGDPenMarkMgr mPenMarkMgr = null;
         public IGDPenMarkMgr getPenMarkMgr() {
@@ -42,7 +41,9 @@ namespace IGD {
 
             this.m3DCameraPerson = new IGD3DCameraPerson();
             this.m2DCameraPerson = new IGD2DCameraPerson();
-            this.mPlotter = new IGDPlotter(this);
+            IGDPlotter.set2DCameraPerson(this.m2DCameraPerson);
+            IGDPlotter.set3DCameraPerson(this.m3DCameraPerson);
+            IGDPlotter.set2DConstants();
             this.mScreen = new XScreen();
 
             this.mPenMarkMgr = new IGDPenMarkMgr();
@@ -60,14 +61,14 @@ namespace IGD {
             this.mMouseEventSource.setEventListener(this.mEventListener);
 
             // Call the methods you write in IGDPlotter.HW.cs here.
-            this.mPlotter.CA1_5();
+            IGDPlotter.W02_drawBezierCure();
         }
             
         void Update() {
             this.m2DCameraPerson.update();
             this.mKeyEventSource.update();
             this.mMouseEventSource.update();
-            this.mPlotter.updateImageOrientation();
+            IGDPlotter.updateImageOrientation();
         }
     }
 }
