@@ -80,6 +80,7 @@
     <Compile Include="Assets\Scripts\IGD\IGDScene.cs" />
     <Compile Include="Assets\Scripts\IGD\IGDMouseEventSource.cs" />
     <Compile Include="Assets\Scripts\XGeom\XPolyline3D.cs" />
+    <Compile Include="Assets\Scripts\IGD\IGDPlotter.CA2.cs" />
     <Compile Include="Assets\Scripts\XPlot\XPlotArrow2D.cs" />
     <Compile Include="Assets\Scripts\IGD\IGDPlotter.cs" />
     <Compile Include="Assets\Scripts\X\XScenario.cs" />

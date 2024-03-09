@@ -82,7 +82,7 @@ namespace XGeorm.NURBS {
         private Vector3 calcPosByBezierDefinition(double u)
         {
             int n = this.getDeg();
-            double[] B = XBezier.calcBasicFns(n, u);
+            double[] B = XBezier.calcAllBernsteinPolynomialsByDynamicProg(n, u);
             Vector4 Cw = Vector4.zero;
             for (int i = 0; i <=n; i++)
             {

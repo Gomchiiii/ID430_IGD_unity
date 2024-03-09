@@ -61,7 +61,7 @@ namespace IGD {
             this.mMouseEventSource.setEventListener(this.mEventListener);
 
             // Call the methods you write in IGDPlotter.HW.cs here.
-            IGDPlotter.W02_drawBezierCure();
+            IGDPlotter.CA2_2(3);
         }
             
         void Update() {

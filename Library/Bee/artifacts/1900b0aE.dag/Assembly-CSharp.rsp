@@ -368,6 +368,7 @@
 "Assets/Scripts/IGD/IGDPenMark.cs"
 "Assets/Scripts/IGD/IGDPenMarkMgr.cs"
 "Assets/Scripts/IGD/IGDPlotter.CA1.cs"
+"Assets/Scripts/IGD/IGDPlotter.CA2.cs"
 "Assets/Scripts/IGD/IGDPlotter.cs"
 "Assets/Scripts/IGD/IGDPlotter.Practice.cs"
 "Assets/Scripts/IGD/IGDScenarioMgr.cs"
