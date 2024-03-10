@@ -18,38 +18,32 @@ namespace XGeorm.NURBS {
         //wehere n is degree
 
         private Vector4[] mCPs = null;
-        public Vector4[] getCPs()
-        {
+        public Vector4[] getCPs() {
             return mCPs;
         }
 
-        public void setCPs(Vector4[] cps)
-        {
+        public void setCPs(Vector4[] cps) {
             Debug.Assert(cps.Length == this.mCPs.Length);
             this.mCPs = cps;
         }
 
-        public void setCP(Vector4 cp, int i)
-        {
+        public void setCP(Vector4 cp, int i) {
             this.mCPs[i] = cp;
         }
-        public Vector4 getCP(int i)
-        {
+        public Vector4 getCP(int i) {
             return this.mCPs[i];
         }
 
-        public int getNumCps()
-        {
+        public int getNumCps() {
             return this.mCPs.Length;
         }
 
         //constructor 
-        public XBezierCurve3D(int deg, Vector4[] cps)
-        {
+        public XBezierCurve3D(int deg, Vector4[] cps) {
             this.setCurve(deg, cps);
         }
-        public XBezierCurve3D(XBezierCurve3D bcv)
-        {
+
+        public XBezierCurve3D(XBezierCurve3D bcv) {
             Vector4[] cps = XCPsUtil.copyCPs(bcv.getCPs());
             this.setCurve(bcv.getDeg(), cps);
         }

@@ -102,5 +102,14 @@ namespace XGeom.NURBS {
         public static double[,] calcAllDeriveBasisFns(int order, int n, double u) {  
             throw new NotImplementedException();
         }
+
+        public static double PointOnBezierCurve(Vector3[] P, int n, int u) {
+            double[] B = calcAllBernsteinPolynomialsByDynamicProg(n, u);
+            Vector3 C = Vector3.zero;
+            for (int k = 0; k <= n; k++) {
+                C += ((float)B[k]) * P[k];
+            }
+            return C;
+        }
     }
 }
