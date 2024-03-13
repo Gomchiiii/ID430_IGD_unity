@@ -98,12 +98,59 @@ namespace XGeom.NURBS {
         
         }
 
-        //refer to The NURBS Book, p.17 Alg 
+        //refer to The NURBS Book, p.17 Alg (p1.7)
+        //Output : dB[k, i] = B^(K)_[i, n](u) for k = 0 to order and i = 0 to n 
         public static double[,] calcAllDeriveBasisFns(int order, int n, double u) {  
-            throw new NotImplementedException();
+            Debug.Assert(order >= 0);
+            Debug.Assert(n >= 0);
+            Debug.Assert(order <= n);
+            Debug.Assert(u >= 0.0);
+            Debug.Assert(u <= 1.0);
+
+            double[,] dB = new double[order + 1, n + 1];
+
+            //First, calculate all the Bersntrein polynomails for order = 0;
+            double[,] B = new double[n + 1, n + 1];
+            B[0, 0] = 1.0;
+            for (int j = 1; j <= n; j++) {
+                int i = 0;
+                B[j, i] = (1.0 - u) * B[j - 1, i];
+                for (i = 1; i <= j; i++) {
+                    B[j, i]  = (1.0 - u) * B[j - 1, i] + u * B[j - 1, i - 1];
+                }
+            }
+
+            for (int i = 0; i <= n; i++) {
+                dB[0, i] = B[n, i];
+            }
+
+            //Then, update last row of B to dB
+
+            //Then update B matrix for order 1 to order, from the last row to the first row at each other.
+            // Copy the last row of B to dB for each round.
+
+            for(int k = 1; k <= order; k++) {
+                for (int j = n; j >= k; j--) {
+                    int i = 0;
+                    B[j, i] = j * (-1) * B[j - 1, i];
+                    for (i = 1; i <= j; i++) {
+                        B[j, i] = j * (B[j - 1, i - 1] - B[j - 1, i]);
+                    }
+                }
+
+                for (int i = 0; i <= n; i++) {
+                    dB[k, i] = B[n, i]; 
+                }
+            }
+            return dB;
         }
 
-        public static double PointOnBezierCurve(Vector3[] P, int n, int u) {
+        public static double calcDerivBernsteinPolynomial(int order, int i , int n , double u) {
+            double[,] dB = calcAllDeriveBasisFns(order, n, u);
+            return dB[order, i];
+        }
+
+        public static Vector3 PointOnBezierCurve(Vector3[] P, int n, int u) {
             double[] B = calcAllBernsteinPolynomialsByDynamicProg(n, u);
             Vector3 C = Vector3.zero;
             for (int k = 0; k <= n; k++) {

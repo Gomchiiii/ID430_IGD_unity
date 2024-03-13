@@ -69,7 +69,7 @@ namespace XGeorm.NURBS {
 
         public override Vector3 calcPos(double u)
         {
-            Vector3 C = this.calcPosByBezierDefinition(u);
+            Vector3 C = this.calcPosByDeCasteljouAlgo(u);
             return C;
         }
 
@@ -86,8 +86,34 @@ namespace XGeorm.NURBS {
             return C;
         }
 
+        private Vector3 calcPosByDeCasteljouAlgo(double u) {
+            int n = this.getDeg();
+
+            Vector4[] Q = new Vector4[n + 1];
+            
+            for (int i = 0; i<=n; i++) {
+                Q[i] = this.getCP(i);
+            }
+
+            for (int k = 1; k <= n; k++) {
+                for (int i = 0; i <= n - k; i++) {
+                    Q[i] = (float)(1.0f - u) * Q[i] + (float)u * Q[i + 1]; 
+                }
+
+            }
+
+            Vector3 C = XCPsUtil.perspectiveMap(Q[0]);
+            return C; 
+        }
+
+        //Output : 0 -th to dorder-th derivates at u
         public override Vector3[] calcDers(int order, double u)
         {
+            throw new System.NotImplementedException();
+        }
+
+
+        public XBezierCurve3D calcDerivCurve(int order) {
             throw new System.NotImplementedException();
         }
     }

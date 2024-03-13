@@ -11,10 +11,8 @@ using XGeorm.NURBS;
 // Make sure that each task becomes a separate method. Test the methods by
 // calling them from the Start method of the IGDApp class.
 namespace IGD {
-    public static partial class IGDPlotter
-    {
-        public static void W01_draw2DVectors()
-        {
+    public static partial class IGDPlotter {
+        public static void W01_draw2DVectors() {
             // Draw a dot (0, 0)
             IGDPlotter.drawDot2D(Vector2.zero);
 
@@ -99,8 +97,7 @@ namespace IGD {
 
         }
 
-        public static void W02_drawBezierCure()
-        {
+        public static void W02_drawBezierCure() {
             IGDPlotter.drawArrow3D(Vector3.zero, Vector3.right, 0.7f);
             IGDPlotter.drawArrow3D(Vector3.zero, Vector3.forward, 0.7f);
             IGDPlotter.drawArrow3D(Vector3.zero, Vector3.up, 0.7f);
@@ -114,12 +111,76 @@ namespace IGD {
 
             XBezierCurve3D bcv = new XBezierCurve3D(cps.Length - 1, cps);
             List<Vector3> bcvPtS = new List<Vector3>();
-            for (int i = 0; i <= 100; i++)
-            {
+            for (int i = 0; i <= 100; i++) {
                 bcvPtS.Add(bcv.calcPos((double)i / 100.0));
             }
             IGDPlotter.drawPolyline3D(bcvPtS, 0.7f);
             IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(cps).ToList(), 0.7f);
+        }
+
+        public static void W03_drawBernsteinDerivatives() {
+            // Draw x and y axes
+            float yMax = Screen.height * 0.6f;
+            float yMin = -Screen.height * 0.2f;
+            Vector2 yAxisStart = new Vector2(0f, yMin);
+            Vector2 yAxisEnd = new Vector2(0f, yMax);
+            IGDPlotter.drawArrow2D(yAxisStart, yAxisEnd);
+
+            float xMax = yMax * 4f / 3f;
+            float xMin = yMin;
+            Vector2 xAxisStart = new Vector2(xMin, 0f);
+            Vector2 xAxisEnd = new Vector2(xMax, 0f);
+            IGDPlotter.drawArrow2D(xAxisStart, xAxisEnd);
+
+            //Plot B_2,5(u)
+            List<Vector2> B25Pts = new List<Vector2>();
+            int sampleNum = 100;
+            for (int i = 0; i < sampleNum; i++) {
+                double u = (double)i / sampleNum;
+                double B25 = XBezier.calcBernsteinPolynomial(2, 5, u);
+                Vector2 pt = new Vector2((float)u * xMax, (float)B25 * yMax);
+                B25Pts.Add(pt);
+            }
+
+            IGDPlotter.drawPolyline2D(B25Pts, 0.7f);
+
+
+            //Plot B_1,4(u)
+            List<Vector2> B14Pts = new List<Vector2>();
+            for (int i = 0; i < sampleNum; i++) {
+                double u = (double)i / sampleNum;
+                double B14 = XBezier.calcBernsteinPolynomial(1, 4, u);
+                Vector2 pt = new Vector2((float)u * xMax, (float)B14 * yMax);
+                B14Pts.Add(pt);
+            }
+
+
+            IGDPlotter.drawPolyline2D(B14Pts, 0.7f);
+
+
+
+            //Plot B_2,4(u)
+            List<Vector2> B24Pts = new List<Vector2>();
+            for (int i = 0; i < sampleNum; i++) {
+                double u = (double)i / sampleNum;
+                double B24 = XBezier.calcBernsteinPolynomial(2, 4, u);
+                Vector2 pt = new Vector2((float)u * xMax, (float)B24 * yMax);
+                B24Pts.Add(pt);
+            }
+
+
+            IGDPlotter.drawPolyline2D(B24Pts, 0.7f);
+
+            // Plot B'_2,5(u)
+            List<Vector2> B25DerPts = new List<Vector2>();
+            for (int i = 0; i <=  sampleNum; i++) {
+                double u = (double)i / sampleNum;
+                double B25der = XBezier.calcDerivBernsteinPolynomial(1, 2, 5, u);
+                Vector2 pt = new Vector2((float)u * xMax, (float)B25der * yMax);
+                B25DerPts.Add(pt);
+            }
+
+            IGDPlotter.drawPolyline2D(B25DerPts, 0.7f);
         }
     }
 }
