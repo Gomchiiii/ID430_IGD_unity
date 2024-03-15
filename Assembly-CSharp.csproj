@@ -98,6 +98,7 @@
     <Compile Include="Assets\Scripts\XAppObject\XAppObject.cs" />
     <Compile Include="Assets\Scripts\XGeom\XLine3D.cs" />
     <Compile Include="Assets\Scripts\XPlot\XPlotImage3D.cs" />
+    <Compile Include="Assets\Scripts\IGD\IGDPlotter.CA3.cs" />
     <Compile Include="Assets\Scripts\XAppObject\XAppNoGeom2D.cs" />
     <Compile Include="Assets\Scripts\IGD\Scenario\IGDNavigateScenario.ZoomCameraScene.cs" />
     <Compile Include="Assets\Scripts\XGeom\XCube3D.cs" />

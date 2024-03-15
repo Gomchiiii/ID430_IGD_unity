@@ -72,7 +72,7 @@ namespace IGD {
             cps[6] = new Vector4(0.7f, 0.7f, 1f, 1f);
             cps[7] = new Vector4(1f, 0f, 0f, 0f);
 
-            IGDPlotter.CA2_3(7, cps);
+            IGDPlotter.CA3_2(7, cps);
         }
             
         void Update() {

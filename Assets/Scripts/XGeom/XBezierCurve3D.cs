@@ -1,11 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Xgeom.NURBS;
-using XGeom;
-using XGeom.NURBS;
 
-namespace XGeorm.NURBS {
+namespace XGeom.NURBS {
     public class XBezierCurve3D : XParametricCurve3D {
      //FIELDS
         private int mDeg = int.MinValue;
@@ -109,7 +108,23 @@ namespace XGeorm.NURBS {
         //Output : 0 -th to dorder-th derivates at u
         public override Vector3[] calcDers(int order, double u)
         {
-            throw new System.NotImplementedException();
+            List<Vector3> Ders = new List<Vector3>();
+            int n = this.getCPs().Length - 1;
+            //New calc formula D_deg/num = D_deg-1/num+1 - De_deg-1/num
+            
+            for (int j = n - 1; j > n - order; j--) {
+                Vector4[] Dpts = new Vector4[j];
+                for (int i = 0; i < j - 3; i++) {
+                    Vector4 temp0 = this.getCP(i);
+                    Vector4 temp1 = this.getCP(i + 1);
+                    Dpts[i] = temp1 - temp0;
+                }
+                this.setCurve(j - 1, Dpts);
+                Ders.Add(this.calcPosByDeCasteljouAlgo(u));
+                Debug.Log("index check");
+            }
+
+            return Ders.ToArray();
         }
 
 
