@@ -221,19 +221,31 @@ namespace IGD {
         }
 
         // Image
-        public static XPlotImage3D addImage3D(string path, Vector3 pos,
+        public static void addImage3D(string path, Vector3 pos,
             float scale = 1f) {
             XPlotImage3D image3D = new(path, path, pos);
             image3D.setScale(scale);
             IGDPlotter.mImage3Ds.Add(image3D);
-            return image3D;
         }
-        public static XPlotImage2D addImage2D(string path, Vector2 pos,
+        public static void addImage3D(string path, Vector3 pos,
+            float scale, Color color) {
+            XPlotImage3D image3D = new(path, path, pos);
+            image3D.setTintColor(color);
+            image3D.setScale(scale);
+            IGDPlotter.mImage3Ds.Add(image3D);
+        }
+        public static void addImage2D(string path, Vector2 pos,
             float scale = 1f) {
             XPlotImage2D image2D = new(path, path, pos);
             image2D.setScale(scale);
             IGDPlotter.mImage2Ds.Add(image2D);
-            return image2D;
+        }
+        public static void addImage2D(string path, Vector2 pos,
+            float scale, Color color) {
+            XPlotImage2D image2D = new(path, path, pos);
+            image2D.setTintColor(color);
+            image2D.setScale(scale);
+            IGDPlotter.mImage2Ds.Add(image2D);
         }
         public static void updateImageOrientation() {
             foreach (XPlotImage3D image3D in mImage3Ds) {

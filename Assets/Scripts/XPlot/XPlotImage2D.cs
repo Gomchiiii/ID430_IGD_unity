@@ -9,6 +9,13 @@ namespace XPlot {
         // constants
         private static readonly float DEFAULT_SCALE = 100f;
         
+        // fields
+        private Color mTintColor = Color.clear;
+        public void setTintColor(Color color) {
+            this.mTintColor = color;
+            this.mGameObject.GetComponent<SpriteRenderer>().color = color;
+        }
+        
         // constructor
         public XPlotImage2D(string name, string filePath, Vector2 pos)
             : base($"{name}/Image2D") {
@@ -27,6 +34,8 @@ namespace XPlot {
             sr.sprite = Sprite.Create(texture,
                 new Rect(0, 0, texture.width, texture.height),
                 new Vector2(0.5f, 0.5f));
+            sr.material = new Material(Shader.Find("Sprites/TintedSprite"));
+            sr.color = this.mTintColor;
             
             this.setPosition(pos);
             this.setScale(1f);
