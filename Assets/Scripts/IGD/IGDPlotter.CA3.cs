@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.VFX;
 using XAppObject;
 using Xgeom.NURBS;
 using XGeom.NURBS;
@@ -182,6 +183,23 @@ namespace IGD {
         // (2) Draw Bezier curves of various degrees along with their control
         // points and control polygon.
         public static void CA3_5(int n, Vector4[] cps) {
+            //Draw x, y, and z 
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.right, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.forward, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.up, 0.7f);
+
+            XBezierCurve3D bcv = new XBezierCurve3D(cps.Length - 1, cps);
+            List<Vector3> bcvPtS = new List<Vector3>();
+            for (int i = 0; i <= 100; i++) {
+                bcvPtS.Add(bcv.calcPos((double)i / 100.0));
+            }
+            IGDPlotter.drawPolyline3D(bcvPtS, 0.7f);
+            IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(cps).ToList(), 0.7f);
+
+            for (int i = 0; i <= n; i++) {
+                IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(cps)[i]);
+            }
+
         }
         
         // CA3-6: Using the de Casteljau algorithm, write code to split an n-th
@@ -189,6 +207,71 @@ namespace IGD {
         // Bezier curves of various degrees being divided. Include the control
         // points and control polygon of the intermediate steps.
         public static void CA3_6(int n, Vector4[] cps, double u) {
+
+            //Draw x, y, and z 
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.right, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.forward, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.up, 0.7f);
+
+            XBezierCurve3D bcv = new XBezierCurve3D(cps.Length - 1, cps);
+            List<Vector3> bcvPtS = new List<Vector3>();
+            for (int i = 0; i <= 100; i++) {
+                bcvPtS.Add(bcv.calcPos((double)i / 100.0));
+            }
+            IGDPlotter.drawPolyline3D(bcvPtS, 0.7f);
+            IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(cps).ToList(), 1f);
+
+            Vector4[] Q = new Vector4[n + 1];
+
+            //Control points of new Bezier curve. 
+            Vector4[] Q1 = new Vector4[n + 1];
+            Vector4[] Q2 = new Vector4[n + 1];
+
+            for (int i = 0; i <= n; i++) {
+                Q[i] = cps[i];
+            }
+
+            for (int k = 1; k <= n; k++) {
+                for (int i = 0; i <= n - k; i++) {
+                    Q[i] = (float)(1.0f - u) * Q[i] + (float)u * Q[i + 1];
+                    IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(Q)[i], 0.5f, Color.gray);
+
+                }
+                IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(Q).ToList(), 0.5f, Color.gray);
+                Q1[k] = Q[0];
+                Q2[n - k] = Q[n - k];
+            }
+
+
+            //Draw devided dot 
+            IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(Q)[0], 1.5f);
+            Q1[0] = cps[0];
+            Q2[n] = cps[n];
+
+            XBezierCurve3D bcv1 = new XBezierCurve3D(n, Q1);
+            XBezierCurve3D bcv2 = new XBezierCurve3D(n, Q2);
+
+
+            for (int i = 0; i <= n; i++) {
+                IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(cps)[i]);
+                IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(Q1)[i], 0.7f, Color.blue);
+                IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(Q2)[i], 0.7f, Color.red);
+            }
+
+            List<Vector3> bcv1PtS = new List<Vector3>();
+            for (int i = 0; i <= 100; i++) {
+                bcv1PtS.Add(bcv1.calcPos((double)i / 100.0));
+            }
+            IGDPlotter.drawPolyline3D(bcv1PtS, 1f, Color.blue);
+
+            List<Vector3> bcv2PtS = new List<Vector3>();
+            for (int i = 0; i <= 100; i++) {
+                bcv2PtS.Add(bcv2.calcPos((double)i / 100.0));
+            }
+            IGDPlotter.drawPolyline3D(bcv2PtS, 1f, Color.red);
+
+            IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(Q1).ToList(), 0.7f, Color.blue);
+            IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(Q2).ToList(), 0.7f, Color.red);
         }
     }
 }
