@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using XAppObject;
+using Xgeom.NURBS;
 using XGeom.NURBS;
 
 // Write the code for the assignments in this file.
@@ -49,22 +51,131 @@ namespace IGD {
         // CA3-2: (1) Implement XBezierCurve3D.calcDers.
         // (2) Draw the derivative vectors at various points on the curve.
         public static void CA3_2(int n, Vector4[] cps) {
-            XBezierCurve3D mXBezierCurve3D = new XBezierCurve3D(n, cps);
-            Vector3[] test = new Vector3[4];
-            test = mXBezierCurve3D.calcDers(3, 2.0);
-            Debug.Log(test[0]);
-            Debug.Log(test[1]);
-            Debug.Log(test[2]);
-        }
+
+            //1st ~ 4th order derivative colors. 
+            List<Color> Colors= new List<Color>();
+            Colors.Add(Color.blue);
+            Colors.Add(Color.cyan);
+            Colors.Add(Color.gray);
+            Colors.Add(Color.green);
+
+            //Draw x, y, and z 
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.right, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.forward, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.up, 0.7f);
+
+            List<Vector3> bcvDerPts = new List<Vector3>();
+
+            int Derorder = 3;
+
+            //Draw Bezier curve
+            XBezierCurve3D bcv = new XBezierCurve3D(cps.Length - 1, cps);
+            List<Vector3> bcvPts = new List<Vector3>();
+            for (int i = 0; i <= 100; i++) {
+                bcvPts.Add(bcv.calcPos((double)i / 100.0));
+
+                //Calc DerPts
+                if (i % 25 == 0) {
+                    for (int j = 1; j <= Derorder; j++) {
+                        //크기가 다 달라서 normalize 
+                        bcvDerPts.Add(Vector3.Normalize(bcv.calcDer(j, (double)i / 100.0)) * 0.15f);
+                    }
+                }
+            }
+
+            IGDPlotter.drawPolyline3D(bcvPts, 0.7f);
+            IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(cps).ToList(), 0.7f);
+
+            for (int i = 0; i <= n; i++) {
+                IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(cps)[i]);
+            }
+
+            for (int i = 0; i < 5; i++) {
+                for (int j = 0; j < Derorder; j++) {
+                    //Debug.Log(i * Derorder + j);
+                    IGDPlotter.drawArrow3D(bcvPts[i * 25], bcvPts[i * 25] + bcvDerPts[i * Derorder + j], 0.5f, Colors[j]);
+                }
+            }
+
+
+    }
 
         // CA3-3: Calculate the k-th derivative curve of an n-th degree Bezier
         // curve and draw it along with the control points and control polygon.
             public static void CA3_3(int n, int k, Vector4[] cps) {
+
+  
+            //Draw x, y, and z 
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.right, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.forward, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.up, 0.7f);
+
+            List<Vector3> bcvDerPts = new List<Vector3>();
+
+            //Draw Bezier curve
+            XBezierCurve3D bcv = new XBezierCurve3D(cps.Length - 1, cps);
+            List<Vector3> bcvPts = new List<Vector3>();
+            for (int i = 0; i <= 100; i++) {
+                bcvPts.Add(bcv.calcPos((double)i / 100.0));
+                bcvDerPts.Add(bcv.calcDer(k, (double)i / 100.0));
+            }
+
+            IGDPlotter.drawPolyline3D(bcvPts, 0.7f);
+            IGDPlotter.drawPolyline3D(bcvDerPts, 1, Color.blue);
+            IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(cps).ToList(), 0.7f);
+
+            for (int i = 0; i <= n; i++) {
+                IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(cps)[i]);
+            }
         }
         
         // CA3-4: Draw the first and second derivative vectors at the end points
         // of the n-th degree Bezier curve.
         public static void CA3_4(int n, Vector4[] cps) {
+            //1st ~ 4th order derivative colors. 
+            List<Color> Colors = new List<Color>();
+            Colors.Add(Color.blue);
+            Colors.Add(Color.cyan);
+            Colors.Add(Color.gray);
+            Colors.Add(Color.green);
+
+            //Draw x, y, and z 
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.right, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.forward, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.up, 0.7f);
+
+            List<Vector3> bcvDerPts = new List<Vector3>();
+
+            int Derorder = 2;
+
+            //Draw Bezier curve
+            XBezierCurve3D bcv = new XBezierCurve3D(cps.Length - 1, cps);
+            List<Vector3> bcvPts = new List<Vector3>();
+            for (int i = 0; i <= 100; i++) {
+                bcvPts.Add(bcv.calcPos((double)i / 100.0));
+
+                //Calc DerPts
+                if (i % 100 == 0) {
+                    for (int j = 1; j <= Derorder; j++) {
+                        //크기가 다 달라서 normalize 
+                        bcvDerPts.Add(Vector3.Normalize(bcv.calcDer(j, (double)i / 100.0)) * 0.15f);
+                    }
+                }
+            }
+
+            IGDPlotter.drawPolyline3D(bcvPts, 0.7f);
+            IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(cps).ToList(), 0.7f);
+
+            for (int i = 0; i <= n; i++) {
+                IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(cps)[i]);
+            }
+
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < Derorder; j++) {
+                    IGDPlotter.drawArrow3D(bcvPts[i * 100], bcvPts[i * 100] + bcvDerPts[i * Derorder + j], 0.5f, Colors[j]);
+                }
+            }
+
         }
         
         // CA3-5: (1) Implement XBezierCurve3D.calcPosByDeCasteljauAlg.

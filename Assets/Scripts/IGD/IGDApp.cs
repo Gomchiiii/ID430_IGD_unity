@@ -62,17 +62,23 @@ namespace IGD {
 
             // Call the methods you write in IGDPlotter.HW.cs here.
 
-            Vector4[] cps = new Vector4[8];
-            cps[0] = new Vector4(1f, 0f, 0f, 0f);
-            cps[1] = new Vector4(1f, 1f, 0f, 1f);
-            cps[2] = new Vector4(1f, 1f, 0.3f, 1f);
-            cps[3] = new Vector4(1f, 1f, 0.6f, 1f);
-            cps[4] = new Vector4(0f, 1f, 1f, 1f);
-            cps[5] = new Vector4(0.3f, 1f, 1f, 1f);
-            cps[6] = new Vector4(0.7f, 0.7f, 1f, 1f);
-            cps[7] = new Vector4(1f, 0f, 0f, 0f);
+            //Vector4[] cps = new Vector4[8];
+            //cps[0] = new Vector4(1f, 0f, 0f, 0f);
+            //cps[1] = new Vector4(1f, 1f, 0f, 1f);
+            //cps[2] = new Vector4(1f, 1f, 0.3f, 1f);
+            //cps[3] = new Vector4(1f, 1f, 0.6f, 1f);
+            //cps[4] = new Vector4(0f, 1f, 1f, 1f);
+            //cps[5] = new Vector4(0.3f, 1f, 1f, 1f);
+            //cps[6] = new Vector4(0.7f, 0.7f, 1f, 1f);
+            //cps[7] = new Vector4(1f, 0f, 0f, 0f);
 
-            IGDPlotter.CA3_2(7, cps);
+            Vector4[] cps = new Vector4[4];
+            cps[0] = new Vector4(0.01f, 0f, 0.03f, 0f);
+            cps[1] = new Vector4(0.01f, 0.01f, 0f, 0f);
+            cps[2] = new Vector4(0.01f, 0.02f, 0.003f, 0f);
+            cps[3] = new Vector4(0.01f, 0.02f, 0.006f, 0f);
+
+            IGDPlotter.CA3_4(3, cps);
         }
             
         void Update() {

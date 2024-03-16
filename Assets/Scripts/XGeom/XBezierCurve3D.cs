@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Xgeom.NURBS;
 
 namespace XGeom.NURBS {
@@ -108,23 +109,18 @@ namespace XGeom.NURBS {
         //Output : 0 -th to dorder-th derivates at u
         public override Vector3[] calcDers(int order, double u)
         {
-            List<Vector3> Ders = new List<Vector3>();
-            int n = this.getCPs().Length - 1;
-            //New calc formula D_deg/num = D_deg-1/num+1 - De_deg-1/num
-            
-            for (int j = n - 1; j > n - order; j--) {
-                Vector4[] Dpts = new Vector4[j];
-                for (int i = 0; i < j - 3; i++) {
-                    Vector4 temp0 = this.getCP(i);
-                    Vector4 temp1 = this.getCP(i + 1);
-                    Dpts[i] = temp1 - temp0;
+            int n = this.getDeg();
+            Vector3[] Ders = new Vector3[order + 1];
+            double[,] DerBernsteins = XBezier.calcAllDeriveBasisFns(order, n, u);
+            for (int i = 1; i <= order; i++) {
+                Vector3 temp = new Vector3();
+                for (int j = 0; j < n; j++) {
+                    temp += XCPsUtil.perspectiveMap(getCP(j)) * (float)DerBernsteins[i, j];
                 }
-                this.setCurve(j - 1, Dpts);
-                Ders.Add(this.calcPosByDeCasteljouAlgo(u));
-                Debug.Log("index check");
+                Ders[i] = temp;
             }
 
-            return Ders.ToArray();
+            return Ders;
         }
 
 
