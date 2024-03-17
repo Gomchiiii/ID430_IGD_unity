@@ -78,34 +78,49 @@ namespace IGD {
                 //Calc DerPts
                 if (i % 25 == 0) {
                     for (int j = 1; j <= Derorder; j++) {
-                        //크기가 다 달라서 normalize 
+                        //normalize and put vector on each point  
                         bcvDerPts.Add(Vector3.Normalize(bcv.calcDer(j, (double)i / 100.0)) * 0.15f);
                     }
                 }
             }
 
+            //Draw and Label
             IGDPlotter.drawPolyline3D(bcvPts, 0.7f);
             IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(cps).ToList(), 0.7f);
 
             for (int i = 0; i <= n; i++) {
                 IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(cps)[i]);
+                string PointPath = "Formulas/P" + i.ToString();
+                IGDPlotter.addImage3D(PointPath, XCPsUtil.perspectiveMap(cps)[i] + 0.05f * Vector3.up, 0.5f);
+
             }
 
             for (int i = 0; i < 5; i++) {
                 for (int j = 0; j < Derorder; j++) {
-                    //Debug.Log(i * Derorder + j);
                     IGDPlotter.drawArrow3D(bcvPts[i * 25], bcvPts[i * 25] + bcvDerPts[i * Derorder + j], 0.5f, Colors[j]);
                 }
             }
 
+            //Mark each Der 
+            IGDPlotter.addImage3D("Formulas/MarkCu1stDer", Vector3.forward, 0.5f, Colors[0]);
+            IGDPlotter.addImage3D("Formulas/MarkCu2ndDer", Vector3.forward + 0.1f * Vector3.up, 0.5f, Colors[1]);
+            IGDPlotter.addImage3D("Formulas/MarkCu3rdDer", Vector3.forward + 0.2f * Vector3.up, 0.5f, Colors[2]);
 
-    }
+
+        }
 
         // CA3-3: Calculate the k-th derivative curve of an n-th degree Bezier
         // curve and draw it along with the control points and control polygon.
-            public static void CA3_3(int n, int k, Vector4[] cps) {
+        public static void CA3_3(int n, int k, Vector4[] cps) {
 
-  
+            //1st ~ 4th order derivative colors. 
+            List<Color> Colors = new List<Color>();
+            Colors.Add(Color.blue);
+            Colors.Add(Color.cyan);
+            Colors.Add(Color.gray);
+            Colors.Add(Color.green);
+
+
             //Draw x, y, and z 
             IGDPlotter.drawArrow3D(Vector3.zero, Vector3.right, 0.7f);
             IGDPlotter.drawArrow3D(Vector3.zero, Vector3.forward, 0.7f);
@@ -113,7 +128,7 @@ namespace IGD {
 
             List<Vector3> bcvDerPts = new List<Vector3>();
 
-            //Draw Bezier curve
+            //Calc Bezier curve and its derivative 
             XBezierCurve3D bcv = new XBezierCurve3D(cps.Length - 1, cps);
             List<Vector3> bcvPts = new List<Vector3>();
             for (int i = 0; i <= 100; i++) {
@@ -122,12 +137,19 @@ namespace IGD {
             }
 
             IGDPlotter.drawPolyline3D(bcvPts, 0.7f);
-            IGDPlotter.drawPolyline3D(bcvDerPts, 1, Color.blue);
+            IGDPlotter.drawPolyline3D(bcvDerPts, 1, Colors[k - 1]);
             IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(cps).ToList(), 0.7f);
 
             for (int i = 0; i <= n; i++) {
                 IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(cps)[i]);
+                //Label points 
+                string PointPath = "Formulas/P" + i.ToString();
+                IGDPlotter.addImage3D(PointPath, XCPsUtil.perspectiveMap(cps)[i] + 0.05f * Vector3.up, 0.5f);
             }
+
+            IGDPlotter.addImage3D("Formulas/MarkCu1stDer", Vector3.forward, 0.5f, Color.blue);
+            IGDPlotter.addImage3D("Formulas/MarkCu2ndDer", Vector3.forward + 0.1f * Vector3.up, 0.5f, Color.cyan);
+            IGDPlotter.addImage3D("Formulas/MarkCu3rdDer", Vector3.forward + 0.2f * Vector3.up, 0.5f, Color.gray);
         }
         
         // CA3-4: Draw the first and second derivative vectors at the end points
@@ -169,6 +191,8 @@ namespace IGD {
 
             for (int i = 0; i <= n; i++) {
                 IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(cps)[i]);
+                string PointPath = "Formulas/P" + i.ToString();
+                IGDPlotter.addImage3D(PointPath, XCPsUtil.perspectiveMap(cps)[i] + 0.05f * Vector3.up, 0.5f);
             }
 
             for (int i = 0; i < 2; i++) {
@@ -176,6 +200,10 @@ namespace IGD {
                     IGDPlotter.drawArrow3D(bcvPts[i * 100], bcvPts[i * 100] + bcvDerPts[i * Derorder + j], 0.5f, Colors[j]);
                 }
             }
+
+
+            IGDPlotter.addImage3D("Formulas/MarkCu1stDer", Vector3.forward, 0.5f, Color.blue);
+            IGDPlotter.addImage3D("Formulas/MarkCu2ndDer", Vector3.forward + 0.1f * Vector3.up, 0.5f, Color.cyan);
 
         }
         
@@ -198,6 +226,8 @@ namespace IGD {
 
             for (int i = 0; i <= n; i++) {
                 IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(cps)[i]);
+                string PointPath = "Formulas/P" + i.ToString();
+                IGDPlotter.addImage3D(PointPath, XCPsUtil.perspectiveMap(cps)[i] + 0.05f * Vector3.up, 0.5f);
             }
 
         }
@@ -254,8 +284,11 @@ namespace IGD {
 
             for (int i = 0; i <= n; i++) {
                 IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(cps)[i]);
+                string PointPath = "Formulas/P" + i.ToString();
+                IGDPlotter.addImage3D(PointPath, XCPsUtil.perspectiveMap(cps)[i] + 0.05f * Vector3.up, 0.5f);
                 IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(Q1)[i], 0.7f, Color.blue);
                 IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(Q2)[i], 0.7f, Color.red);
+
             }
 
             List<Vector3> bcv1PtS = new List<Vector3>();
