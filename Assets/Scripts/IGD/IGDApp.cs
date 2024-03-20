@@ -76,7 +76,7 @@ namespace IGD {
             //cps[2] = new Vector4(0.01f, 0.02f, 0.003f, 0f);
             //cps[3] = new Vector4(0.01f, 0.02f, 0.04f, 0f);
 
-            IGDPlotter.CA3_6(5, cps, 0.33);
+            IGDPlotter.W04_drawBSPlineBasisFns();
         }
             
         void Update() {

@@ -182,5 +182,47 @@ namespace IGD {
 
             IGDPlotter.drawPolyline2D(B25DerPts, 0.7f);
         }
+
+        public static void W04_drawBSPlineBasisFns() {
+            float xMax = Screen.width / 1.5f;
+            float yMax = Screen.height / 1.5f;
+
+            IGDPlotter.drawArrow2D(Vector2.zero, new Vector2(xMax, 0));
+            IGDPlotter.drawArrow2D(Vector2.zero, new Vector2(0, yMax));
+            float unitLength = xMax / 5f;
+
+            //Knot Vector in Fig 2.6
+            double[] knotVector =
+                new double[] { 0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5 };
+            double us = knotVector[0];
+            double ue = knotVector[knotVector.Length - 1];
+
+            //Sampling for render 
+            int usSample = (int)(us * (double)unitLength);
+            int ueSample = (int)(ue * (double)unitLength);
+
+            // m = 11, p = 2
+            int m = knotVector.Length;
+            int p = 2;
+
+            //point to render the basis function 
+            List<List<Vector2>> basisFnsPts = new List<List<Vector2>>();
+            for (int i = 0; i < m - p - 1; i++) {
+                basisFnsPts.Add(new List<Vector2>());
+            }
+
+            for (int i = usSample; i <= ueSample; i++) {
+                double[] BasisFnsValues = XBspline.calcBasisFns((double)i / (double)unitLength, p, knotVector);
+                for (int j = 0; j < BasisFnsValues.Length; j++) {
+                    double basisFnsValue = BasisFnsValues[j];
+                    basisFnsPts[j].Add(new Vector2(i, (float)basisFnsValue * unitLength));
+                }
+            }
+            //plot each basis funs in hsb colors 
+            for (int i = 0; i < basisFnsPts.Count; i++) {
+                drawPolyline2D(basisFnsPts[i], 0.7f, Color.HSVToRGB((float)i / (float)basisFnsPts.Count, 1, 1));
+            }
+        }
     }
+
 }
