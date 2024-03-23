@@ -115,12 +115,13 @@
     <Compile Include="Assets\Scripts\IGD\IGDPlotter.CA1.cs" />
     <Compile Include="Assets\Scripts\XAppObject\XAppObject2D.cs" />
     <Compile Include="Assets\Scripts\XGeom\XGeom.cs" />
-    <Compile Include="Assets\Scripts\XGeom\NURBS\IGDApp.cs" />
+    <Compile Include="Assets\Scripts\IGD\IGDPlotter.CA4.cs" />
     <Compile Include="Assets\Scripts\XGeom\XParametricCurve3D.cs" />
     <Compile Include="Assets\Scripts\XGeom\XRect3D.cs" />
     <Compile Include="Assets\Scripts\XGeom\XGeom3D.cs" />
     <Compile Include="Assets\Scripts\XPlot\XPlotDashedPolyline3D.cs" />
     <Compile Include="Assets\Scripts\IGD\IGDCursor2D.cs" />
+    <Compile Include="Assets\Scripts\IGD\IGDApp.cs" />
     <Compile Include="Assets\Scripts\X\XApp.cs" />
     <Compile Include="Assets\Scripts\IGD\IGDUtil.cs" />
     <Compile Include="Assets\Scripts\XGeom\NURBS\XCPsUtil.cs" />
