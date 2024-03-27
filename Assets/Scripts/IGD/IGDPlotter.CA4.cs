@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using XAppObject;
 using XGeom.NURBS;
@@ -39,7 +40,7 @@ namespace IGD {
                 basisFnsPts.Add(new List<Vector2>());
             }
 
-            for (int i = usSample; i <= ueSample; i++) {
+            for (int i = usSample; i < ueSample; i++) {
                 double[] BasisFnsValues = XBspline.calcBasisFns((double)i / (double)unitLength, p, U);
                 for (int j = 0; j < BasisFnsValues.Length; j++) {
                     double basisFnsValue = BasisFnsValues[j];
@@ -49,11 +50,13 @@ namespace IGD {
             //plot each basis funs in hsb colors 
             for (int i = 0; i < basisFnsPts.Count; i++) {
                 drawPolyline2D(basisFnsPts[i], 0.7f, Color.HSVToRGB((float)i / (float)basisFnsPts.Count, 1, 1));
+                string imgpath = "Formulas/N" + i.ToString() + p.ToString();
+                IGDPlotter.addImage2D(imgpath, new Vector2( - unitLength * 0.3f, i * unitLength * 0.3f), 0.7f, Color.HSVToRGB((float)i / (float)basisFnsPts.Count, 1, 1));
             }
 
             //label each knot
             for (int i = 0; i < m; i++) {
-                IGDPlotter.drawDot2D(new Vector2(unitLength * (float)U[i], 0));
+                IGDPlotter.drawDot2D(new Vector2(unitLength * (float)U[i], 0), 1.3f);
             }
 
         }
