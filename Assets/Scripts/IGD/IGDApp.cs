@@ -78,7 +78,7 @@ namespace IGD {
 
             double[] U = { 0, 0, 0, 2, 3, 3, 4, 4, 4 };
 
-            IGDPlotter.CA4_1(U, 0);
+            IGDPlotter.W05_drawDerivBsisFns();
         }
             
         void Update() {

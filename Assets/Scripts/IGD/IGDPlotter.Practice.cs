@@ -223,6 +223,50 @@ namespace IGD {
                 drawPolyline2D(basisFnsPts[i], 0.7f, Color.HSVToRGB((float)i / (float)basisFnsPts.Count, 1, 1));
             }
         }
+
+        public static void W05_drawDerivBsisFns() {
+            float unitLen = Screen.width / 5f;
+
+            //draw u and N axes
+            float uAxisLength = 4.5f * unitLen;
+            float NAxisLength = 2f * unitLen;
+
+            Vector2 uAxisEnd = new Vector2(uAxisLength, 0f);
+            Vector2 NAxisEnd = new Vector2(0f, NAxisLength);
+            IGDPlotter.drawArrow2D(Vector2.zero, uAxisEnd);
+            IGDPlotter.drawArrow2D(Vector2.zero, NAxisEnd);
+
+            //Plot 0-th to 2nd derivatives of .....
+            int order = 2;
+            int p = 2;
+            double[] U = { 0, 0, 0, 2, 3, 3, 4, 4, 4 };
+            double us = 0.0;
+            double ue = 4.0;
+            int m = U.Length - 1;
+            int n = m - p - 1;
+            int i = 2;
+
+            int samplenum = 1000;
+            for (int j = 0; j <= samplenum; j++) {
+                double u = us + (double)j / samplenum * (ue - us);
+                double[,] dN = XBspline.calcAllDerivBasisFns(order, u, p, U);
+
+                //Plot
+                double dN0 = dN[0, i];
+                Vector2 pt0 = new Vector2((float)u * unitLen, (float)dN0 * unitLen);
+                IGDPlotter.drawDot2D(pt0, 0.3f, Color.black);
+
+
+                double dN1 = dN[1, i];
+                Vector2 pt1 = new Vector2((float)u * unitLen, (float)dN1 * unitLen);
+                IGDPlotter.drawDot2D(pt1, 0.3f, Color.blue);
+
+                double dN2 = dN[2, i];
+                Vector2 pt2 = new Vector2((float)u * unitLen, (float)dN2 * unitLen);
+                IGDPlotter.drawDot2D(pt2, 0.3f, Color.red);
+            }
+
+        }
     }
 
 }
