@@ -84,10 +84,12 @@
     <Compile Include="Assets\Scripts\IGD\IGDPlotter.CA2.cs" />
     <Compile Include="Assets\Scripts\XPlot\XPlotArrow2D.cs" />
     <Compile Include="Assets\Scripts\IGD\IGDPlotter.cs" />
+    <Compile Include="Assets\Scripts\IGD\IGDPlotter.CA5.cs" />
     <Compile Include="Assets\Scripts\X\XScenario.cs" />
     <Compile Include="Assets\Scripts\X\XLogMgr.cs" />
     <Compile Include="Assets\Scripts\XAppObject\XAppPolyline3D.cs" />
     <Compile Include="Assets\Scripts\XGeom\XCurve3D.cs" />
+    <Compile Include="Assets\Scripts\XGeom\XBSplineCurve3D.cs" />
     <Compile Include="Assets\Scripts\X\XLoggableCmd.cs" />
     <Compile Include="Assets\Scripts\IGD\IGDScenarioMgr.cs" />
     <Compile Include="Assets\Scripts\XGeom\XCircle2D.cs" />

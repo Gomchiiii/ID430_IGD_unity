@@ -79,7 +79,6 @@ namespace XGeom.NURBS {
             return N;
         }
 
-        // 
         public static double[,] calcAllDerivBasisFns(int order, double u, int p, double[] U) {
             Debug.Assert(order <= p);
 
