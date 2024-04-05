@@ -27,12 +27,15 @@ namespace Xgeom.NURBS
         public static Vector3 perspectiveMap(Vector4 pw) {
             Vector3 p;
             if (Mathf.Abs(pw.w - 1.0f) < XCPsUtil.W1_TOL)
-            {
-                p = new Vector3(pw.x / pw.w, pw.y / pw.w, pw.z / pw.w);
-            } else
-            {
+            {    
+                p = new Vector3(pw.x, pw.y, pw.z);
+
+            } else if (Mathf.Abs(pw.w) < XCPsUtil.W1_TOL) {
                 p = new Vector3(pw.x, pw.y, pw.z);
                 p.Normalize();
+            } else {
+                p = new Vector3(pw.x / pw.w, pw.y / pw.w, pw.z / pw.w);
+
             }
             return p;
         }

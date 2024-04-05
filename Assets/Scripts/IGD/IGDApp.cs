@@ -78,7 +78,7 @@ namespace IGD {
 
             double[] U = { 0, 0, 0, 2, 3, 3, 4, 4, 4 };
 
-            IGDPlotter.CA5_3();
+            IGDPlotter.W06_drawDerivatives();
         }
             
         void Update() {

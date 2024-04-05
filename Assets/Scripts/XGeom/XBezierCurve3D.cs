@@ -87,40 +87,104 @@ namespace XGeom.NURBS {
         }
 
         private Vector3 calcPosByDeCasteljouAlgo(double u) {
-            int n = this.getDeg();
+            int n = this.mDeg;
 
-            Vector4[] Q = new Vector4[n + 1];
-            
-            for (int i = 0; i<=n; i++) {
-                Q[i] = this.getCP(i);
-            }
+            //The temp array first contains all the control points in Vector4.
+            Vector4[] interCPs = XCPsUtil.copyCPs(this.mCPs);
 
-            for (int k = 1; k <= n; k++) {
-                for (int i = 0; i <= n - k; i++) {
-                    Q[i] = (float)(1.0f - u) * Q[i] + (float)u * Q[i + 1]; 
+            //in the i-th step, temp[j] contains p_{i, j}. (refer to p.24)
+            for (int i = 1;i <= n; i++) {
+                for (int j = 0; j <= n - i; j++) {
+                    interCPs[j] = (1 - (float)u) * interCPs[j] + (float) u * interCPs[j + 1];
                 }
-
             }
+            return XCPsUtil.perspectiveMap(interCPs[0]);
+            //int n = this.getDeg();
 
-            Vector3 C = XCPsUtil.perspectiveMap(Q[0]);
-            return C; 
+            //Vector4[] Q = new Vector4[n + 1];
+            
+            //for (int i = 0; i<=n; i++) {
+            //    Q[i] = this.getCP(i);
+            //}
+
+            //for (int k = 1; k <= n; k++) {
+            //    for (int i = 0; i <= n - k; i++) {
+            //        Q[i] = (float)(1.0f - u) * Q[i] + (float)u * Q[i + 1]; 
+            //    }
+
+            //}
+
+            //Vector3 C = XCPsUtil.perspectiveMap(Q[0]);
+            //return C; 
         }
 
         //Output : 0 -th to dorder-th derivates at u
         public override Vector3[] calcDers(int order, double u)
         {
             int n = this.getDeg();
-            Vector3[] Ders = new Vector3[order + 1];
-            double[,] DerBernsteins = XBezier.calcAllDeriveBasisFns(order, n, u);
-            for (int i = 1; i <= order; i++) {
-                Vector3 temp = new Vector3();
-                for (int j = 0; j < n; j++) {
-                    temp += XCPsUtil.perspectiveMap(getCP(j)) * (float)DerBernsteins[i, j];
+
+            Debug.Assert(order <= n);
+
+            //Derivate of basis function 
+            double[,] dB = XBezier.calcAllDeriveBasisFns(order, n, u);
+
+            //Derivate of ration Bezier curve;
+            Vector3[] ders = new Vector3[order + 1];
+
+            //calculate derivative of X, Y, Z, W
+            double[] dX = new double[order + 1];
+            double[] dY = new double[order + 1];
+            double[] dZ = new double[order + 1];
+            double[] dW = new double[order + 1];
+
+            for (int k = 0; k <= order; k++) {
+                for (int j = 0; j <= n; j++) {
+                    dX[k] += dB[k, j] * this.mCPs[j].x;
+                    dY[k] += dB[k, j] * this.mCPs[j].y;
+                    dZ[k] += dB[k, j] + this.mCPs[j].z;
+                    dW[k] += dB[k, j] + this.mCPs[j].w;
                 }
-                Ders[i] = temp;
             }
 
-            return Ders;
+            //calcualte derivateive of curve from 00 th to kth order
+            for (int k = 0; k <= order; k++) {
+                Vector3 dC = Vector3.zero;
+                dC += new Vector3((float)dX[k], (float)dY[k], (float)dZ[k]);
+
+                for (int i = 1; i <= k; i++) {
+                    // i!
+                    double d0 = 1.0f;
+                    for (int j = i; j > 1; j --) {
+                        d0 *= (double)j;
+                    }
+                    // (k - i )!
+                    double d1 = 1.0;
+                    for (int  j = k - i; j > 1; j --) {
+                        d1 *= (double)j;
+                    }
+                    // (k)!
+                    double n0 = 1.0;
+                    for (int j = k; j > 1; j--) {
+                        n0 *= (double)j;
+                    }
+                    dC -= (float)(n0 / (d0 * d1)) * (float)dW[i] * ders[k - i];
+                }
+                ders[k] = dC / (float)dW[0];
+            }
+
+            return ders;
+            //int n = this.getDeg();
+            //Vector3[] Ders = new Vector3[order + 1];
+            //double[,] DerBernsteins = XBezier.calcAllDeriveBasisFns(order, n, u);
+            //for (int i = 1; i <= order; i++) {
+            //    Vector3 temp = new Vector3();
+            //    for (int j = 0; j < n; j++) {
+            //        temp += XCPsUtil.perspectiveMap(getCP(j)) * (float)DerBernsteins[i, j];
+            //    }
+            //    Ders[i] = temp;
+            //}
+
+            //return Ders;
         }
 
 

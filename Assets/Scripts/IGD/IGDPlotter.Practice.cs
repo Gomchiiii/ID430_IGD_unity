@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -173,7 +174,7 @@ namespace IGD {
 
             // Plot B'_2,5(u)
             List<Vector2> B25DerPts = new List<Vector2>();
-            for (int i = 0; i <=  sampleNum; i++) {
+            for (int i = 0; i <= sampleNum; i++) {
                 double u = (double)i / sampleNum;
                 double B25der = XBezier.calcDerivBernsteinPolynomial(1, 2, 5, u);
                 Vector2 pt = new Vector2((float)u * xMax, (float)B25der * yMax);
@@ -265,6 +266,161 @@ namespace IGD {
                 Vector2 pt2 = new Vector2((float)u * unitLen, (float)dN2 * unitLen);
                 IGDPlotter.drawDot2D(pt2, 0.3f, Color.red);
             }
+
+
+        }
+
+        public static void W06_drawRationalBezierCurve() {
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.right, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.forward, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.up, 0.7f);
+
+            //Draw an arc using rational Bezier curve
+
+            Vector4[] cps = new Vector4[3];
+            cps[0] = new Vector4(1f, 0f, 0f, 1f);
+            cps[1] = new Vector4(1f * (float)Math.Cos(45 * Mathf.Deg2Rad),
+                1f * (float)Math.Cos(45 * Mathf.Deg2Rad),
+                0f * (float)Math.Cos(45 * Mathf.Deg2Rad), (float)Math.Cos(45 * Mathf.Deg2Rad));
+            cps[2] = new Vector4(0f, 1f, 0f, 1f);
+
+            XBezierCurve3D rbcv = new XBezierCurve3D(cps.Length - 1, cps);
+            List<Vector3> rbcvPts = new List<Vector3>();
+            for (int i = 0; i <= 100; i++) {
+                rbcvPts.Add(rbcv.calcPos((double)i / 100.0));
+            }
+
+            //plot
+            IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(cps).ToList(), 0.7f);
+            foreach (Vector4 v in cps) {
+                IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(v));
+            }
+
+            //plot the rational bezier cuve
+            IGDPlotter.drawPolyline3D(rbcvPts, 1f);
+
+            //Draw an arc using cos, sin 
+            List<Vector3> circlePts = new List<Vector3>();
+            for (int i = 0; i <= 90; i++) {
+                circlePts.Add(new Vector3(Mathf.Cos(i * Mathf.Deg2Rad),
+                    Mathf.Sin(i * Mathf.Deg2Rad), 0));
+            }
+            IGDPlotter.drawPolyline3D(circlePts, 1.2f, Color.red);
+
+        }
+
+        public static void W06_homogeneousCoordinate() {
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.right, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.forward, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.up, 0.7f);
+
+            //Draw an arc using rational Bezier curve
+
+            Vector4[] cps = new Vector4[4];
+            cps[0] = new Vector4(1f, 0f, 1f, 1f);
+            cps[1] = new Vector4(1f * (float)Math.Cos(45 * Mathf.Deg2Rad),
+                1f * (float)Math.Cos(45 * Mathf.Deg2Rad),
+                1f * (float)Math.Cos(45 * Mathf.Deg2Rad), (float)Math.Cos(45 * Mathf.Deg2Rad));
+            cps[2] = new Vector4(0f, 1f, 1f, 1f);
+            cps[3] = new Vector4(-1f * (float)Math.Cos(45 * Mathf.Deg2Rad),
+                -1f * (float)Math.Cos(45 * Mathf.Deg2Rad),
+                1f * (float)Math.Cos(45 * Mathf.Deg2Rad), (float)Math.Cos(45 * Mathf.Deg2Rad));
+
+            XBezierCurve3D rbcv = new XBezierCurve3D(cps.Length - 1, cps);
+            List<Vector3> rbcvPts = new List<Vector3>();
+            for (int i = 0; i <= 100; i++) {
+                rbcvPts.Add(rbcv.calcPos((double)i / 100.0));
+            }
+
+            //plot
+            IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(cps).ToList(), 0.7f);
+            foreach (Vector4 v in cps) {
+                IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(v));
+            }
+
+            //plot the rational bezier cuve
+            IGDPlotter.drawPolyline3D(rbcvPts, 1f);
+
+            //draw non- rational Bezier curve
+            //each control point hs the same coordinate except weight is 1
+            cps = new Vector4[4];
+            cps[0] = new Vector4(1f, 0f, 1f, 1f);
+            cps[1] = new Vector4(1f * (float)Math.Cos(45 * Mathf.Deg2Rad),
+                1f * (float)Math.Cos(45 * Mathf.Deg2Rad),
+                1f * (float)Math.Cos(45 * Mathf.Deg2Rad), 1f);
+            cps[2] = new Vector4(0f, 1f, 1f, 1f);
+            cps[3] = new Vector4(-1f * (float)Math.Cos(45 * Mathf.Deg2Rad),
+    -1f * (float)Math.Cos(45 * Mathf.Deg2Rad),
+    1f * (float)Math.Cos(45 * Mathf.Deg2Rad), 1f);
+
+            XBezierCurve3D bcv = new XBezierCurve3D(cps.Length - 1, cps);
+            List<Vector3> bcvPts = new List<Vector3>();
+
+            for (int i = 0; i <= 100; i++) {
+                bcvPts.Add(bcv.calcPos((double)i / 100.0));
+
+            }
+
+            IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(cps).ToList(), 0.5f, Color.red);
+            foreach (Vector4 v in cps) {
+                IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(v), 0.5f, Color.red);
+            }
+
+            //PLOT THE BEZIER CURVE
+            IGDPlotter.drawPolyline3D(bcvPts, 0.5f, Color.red);
+        }
+
+
+        public static void W06_drawDerivatives() {
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.right, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.forward, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.up, 0.7f);
+
+            //Draw an arc using rational Bezier curve
+
+            Vector4[] cps = new Vector4[3];
+            cps[0] = new Vector4(1f, 0f, 0f, 1f);
+            cps[1] = new Vector4(1f * (float)Math.Cos(45 * Mathf.Deg2Rad),
+                1f * (float)Math.Cos(45 * Mathf.Deg2Rad),
+                0f * (float)Math.Cos(45 * Mathf.Deg2Rad), (float)Math.Cos(45 * Mathf.Deg2Rad));
+            cps[2] = new Vector4(0f, 1f, 0f, 1f);
+
+            XBezierCurve3D rbcv = new XBezierCurve3D(cps.Length - 1, cps);
+            List<Vector3> rbcvPts = new List<Vector3>();
+            for (int i = 0; i <= 100; i++) {
+                rbcvPts.Add(rbcv.calcPos((double)i / 100.0));
+            }
+
+            //plot
+            IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(cps).ToList(), 0.7f);
+            foreach (Vector4 v in cps) {
+                IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(v));
+            }
+
+            //plot the rational bezier cuve
+            IGDPlotter.drawPolyline3D(rbcvPts, 1f);
+
+            //draw first derivatevs
+            Vector3 firstDerAtStart = rbcv.calcDer(1, 0.0);
+            IGDPlotter.drawArrow3D(rbcv.calcPos(0.0), rbcv.calcPos(0.0) + firstDerAtStart, 1f, Color.blue);
+
+            Vector3 firstDerAtHalf = rbcv.calcDer(1, 0.5);
+            IGDPlotter.drawArrow3D(rbcv.calcPos(0.5), rbcv.calcPos(0.5) + firstDerAtHalf, 1f, Color.blue);
+
+            Vector3 firstDerAtEnd = rbcv.calcDer(1, 1.0);
+            IGDPlotter.drawArrow3D(rbcv.calcPos(1.0), rbcv.calcPos(1.0) + firstDerAtEnd, 1f, Color.blue);
+
+
+            //draw second derivatevs
+            Vector3 secondDerAtStart = rbcv.calcDer(2, 0.0);
+            IGDPlotter.drawArrow3D(rbcv.calcPos(0.0), rbcv.calcPos(0.0) + secondDerAtStart, 1f, Color.red);
+
+            Vector3 secondDerAtHalf = rbcv.calcDer(2, 0.5);
+            IGDPlotter.drawArrow3D(rbcv.calcPos(0.5), rbcv.calcPos(0.5) + secondDerAtHalf, 1f, Color.red);
+
+            Vector3 secondDerAtEnd = rbcv.calcDer(2, 1.0);
+            IGDPlotter.drawArrow3D(rbcv.calcPos(1.0), rbcv.calcPos(1.0) + secondDerAtEnd, 1f, Color.red);
+
 
         }
     }

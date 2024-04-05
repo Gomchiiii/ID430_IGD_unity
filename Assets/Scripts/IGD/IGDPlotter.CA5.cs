@@ -81,6 +81,10 @@ namespace IGD {
             IGDPlotter.drawPolyline2D(basisFnsder);
             IGDPlotter.drawPolyline2D(basisFns2ndder, 1.0f, Color.red);
 
+            for (int k = 0; k < m; k++) {
+                IGDPlotter.drawDot2D(new Vector2(unitLen * (float)U[i], 0), 1.3f);
+            }
+
         }
     
         
