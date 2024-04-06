@@ -70,26 +70,20 @@ namespace XGeom.NURBS {
         public override Vector3 calcPos(double u) {
             // 1. Find the knot span index j such that u is in [u_j, u_{j+1}).
             double[] U = this.getU();
-            int m = U.Length - 1;
             int p = this.getDeg();
-            int n = m - p - 1;
             //double[] N = new double[n + 1];
             int i = XKnotVectorUtil.findKnotSpanIndex(u, U, p);
             //Debug.Log("findknotspanindex");
 
             // 2. Calculate the sum of N_{i,p}(u) * P_i for i = j-p to j
             double[] M = XBspline.calcNonZeroBasisFnsByDynamicProg(u, i, p, U);
-            //Debug.Log("calcBasisFns");
-
+   
             Vector4 Cw = Vector4.zero;
             for (int j = 0; j <= p; j++) {
                 Cw += (float)M[j] * this.getCP(i - p + j);
             }
             Vector3 C = XCPsUtil.perspectiveMap(Cw);
             return C;
-
-
-            //throw new System.NotImplementedException();
         }
 
         // {D[0],...,D[order]} = {C(u), C'(u), C"(u),...,C^{order}(u)}
@@ -108,14 +102,15 @@ namespace XGeom.NURBS {
             // 2. Calculate the sum of N_{i,p}(u) * P_i for i = j-p to j
             Vector3[] DerC = new Vector3[order + 1];
 
-            int du = System.Math.Min(order, p);
+            //int du = System.Math.Min(order, p);
+            //Debug.Assert(order > p);
 
-            for (int k = 0; k <= du; k++) {
-                double[,] M = XBspline.calcAllDerivBasisFns(du, u, p, U);
+            for (int k = 0; k <= order; k++) {
+                double[,] M = XBspline.calcAllDerivBasisFns(order, u, p, U);
 
                 Vector4 Cw = Vector4.zero;
-                for (int j = 0; j <= p; j++) {
-                    Cw += (float)M[k, j] * this.getCP(i - p + j);
+                for (int j = i - this.mDeg; j <= i; j++) {
+                    Cw += (float)M[k, j] * this.getCP(j);
                 }
 
                 Vector3 C = XCPsUtil.perspectiveMap(Cw);

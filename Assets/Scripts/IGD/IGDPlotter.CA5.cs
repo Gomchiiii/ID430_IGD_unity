@@ -147,7 +147,6 @@ namespace IGD {
             double ue = 4.0;
 
             int deg = 2;
-            int Derorder = 2;
 
             List<Vector3> bcvDerPts = new List<Vector3>();
             List<Vector3> bcv2ndDerPts = new List<Vector3>();
@@ -180,7 +179,7 @@ namespace IGD {
                 IGDPlotter.addImage3D(PointPath, XCPsUtil.perspectiveMap(IGDPlotter.getReferenceCPs())[i] + 0.05f * Vector3.up, 0.5f);
             }
 
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i <= 4; i++) {
                 IGDPlotter.drawArrow3D(bcvPtsforDerLabeling[i],
                     bcvPtsforDerLabeling[i] + bcvDerPts[i], 0.5f, Colors[1]);
                 IGDPlotter.drawArrow3D(bcvPtsforDerLabeling[i],

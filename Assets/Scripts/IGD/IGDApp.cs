@@ -44,6 +44,7 @@ namespace IGD {
             IGDPlotter.set2DCameraPerson(this.m2DCameraPerson);
             IGDPlotter.set3DCameraPerson(this.m3DCameraPerson);
             IGDPlotter.set2DConstants();
+            IGDPlotter.setApp(this);
             this.mScreen = new XScreen();
 
             this.mPenMarkMgr = new IGDPenMarkMgr();
@@ -78,7 +79,7 @@ namespace IGD {
 
             double[] U = { 0, 0, 0, 2, 3, 3, 4, 4, 4 };
 
-            IGDPlotter.W06_drawDerivatives();
+            IGDPlotter.CA6_3(Vector3.zero, 0.2f, 10, 200);
         }
             
         void Update() {

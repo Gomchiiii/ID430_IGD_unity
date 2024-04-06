@@ -141,8 +141,8 @@ namespace XGeom.NURBS {
                 for (int j = 0; j <= n; j++) {
                     dX[k] += dB[k, j] * this.mCPs[j].x;
                     dY[k] += dB[k, j] * this.mCPs[j].y;
-                    dZ[k] += dB[k, j] + this.mCPs[j].z;
-                    dW[k] += dB[k, j] + this.mCPs[j].w;
+                    dZ[k] += dB[k, j] * this.mCPs[j].z;
+                    dW[k] += dB[k, j] * this.mCPs[j].w;
                 }
             }
 

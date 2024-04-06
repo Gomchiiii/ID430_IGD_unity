@@ -40,6 +40,19 @@ namespace XPlot {
             this.setPosition(pos);
             this.setScale(1f);
         }
+        public XPlotImage3D(string name, Texture2D texture, Vector3 pos) 
+            : base($"{name}/Image3D") {
+            this.mGameObject.AddComponent<SpriteRenderer>();
+            SpriteRenderer sr = this.mGameObject.GetComponent<SpriteRenderer>();
+            sr.sprite = Sprite.Create(texture,
+                new Rect(0, 0, texture.width, texture.height),
+                new Vector2(0.5f, 0.5f));
+            sr.material = new Material(Shader.Find("Sprites/TintedSprite"));
+            sr.color = this.mTintColor;
+            
+            this.setPosition(pos);
+            this.setScale(1f);
+        }
         
         // methods
         public void setScale(float scale) {

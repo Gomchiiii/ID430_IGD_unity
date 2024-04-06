@@ -75,8 +75,8 @@ namespace XGeom.NURBS {
                 }   
                 mid = (low + high) / 2;
             }
-            return mid;
 
+            return mid;
         }
 
     }
