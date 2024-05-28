@@ -41,7 +41,7 @@ namespace IGD {
             }
 
             for (int i = usSample; i < ueSample; i++) {
-                double[] BasisFnsValues = XBspline.calcBasisFns((double)i / (double)unitLength, p, U);
+                double[] BasisFnsValues = XBSpline.calcBasisFns((double)i / (double)unitLength, p, U);
                 for (int j = 0; j < BasisFnsValues.Length; j++) {
                     double basisFnsValue = BasisFnsValues[j];
                     basisFnsPts[j].Add(new Vector2(i, (float)basisFnsValue * unitLength));

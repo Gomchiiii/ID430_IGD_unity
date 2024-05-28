@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Xgeom.NURBS;
+using XAppObject;
 using XGeom;
 using XGeom.NURBS;
+using XPlot;
 
 namespace IGD {
     public static partial class IGDPlotter {
@@ -126,6 +127,14 @@ namespace IGD {
                 IGDPlotter.drawDot3D(pt, dotScale, color);
             }
         }
+
+        public static void labelControlPoints(Vector4[] cps, float scale,
+            Color color, string prefix, Vector3 offset) {
+            for (int i = 0; i < cps.Length; i++) {
+                Vector3 pos = XCPsUtil.perspectiveMap(cps[i]) + offset;
+                IGDPlotter.writeFormula3D($"{prefix}_{{{i}}}", pos, scale, color);
+			}
+		}
         
         public static void drawControlPolygon(Vector4[] cps, float lineScale,
             Color color) {
@@ -198,6 +207,64 @@ namespace IGD {
         }
         public static void drawKnotVector(double[] U, float lineLength) {
             IGDPlotter.drawKnotVector(U, lineLength, 0.8f, 0.8f, Color.black);
+        }
+        
+        // Surface
+        public static XAppBezierSurface3D drawBezierSurface3D(
+            XBezierSurface3D bsf, Color color) {
+            return new XAppBezierSurface3D("Bezier Surface", bsf, color);
+        }
+        public static XAppBezierSurface3D drawBezierSurface3D(
+            XBezierSurface3D bsf) {
+            Color color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+            return new XAppBezierSurface3D("Bezier Surface", bsf, color);
+        }
+        public static XAppBSplineSurface3D drawBSplineSurface3D(
+            XBSplineSurface3D bssf, Color color) {
+            return new XAppBSplineSurface3D("BSpline Surface", bssf, color);
+        }
+        public static XAppBSplineSurface3D drawBSplineSurface3D(
+            XBSplineSurface3D bssf) {
+            Color color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+            return new XAppBSplineSurface3D("BSpline Surface", bssf, color);
+        }
+        
+        public static void drawControlPoints(Vector4[,] cps,
+            float dotScale, Color color) {
+            foreach (Vector4 cp in cps) {
+                Vector3 pt = XCPsUtil.perspectiveMap(cp);
+                IGDPlotter.drawDot3D(pt, dotScale, color);
+            }
+        }
+        
+        public static void labelControlPoints(Vector4[,] cps, float scale, 
+            Color color, string prefix, Vector3 offset) {
+            for (int i = 0; i < cps.GetLength(0); i++) {
+                for (int j = 0; j < cps.GetLength(1); j++) {
+                    Vector3 pos = XCPsUtil.perspectiveMap(cps[i, j]) + offset;
+                    IGDPlotter.writeFormula3D($"{prefix}_{{{i},{j}}}", pos, scale,
+                        color);
+                }
+            }
+        }
+
+        public static void drawControlNet(Vector4[,] cps,
+            float lineScale, Color color) {
+            for (int i = 0; i < cps.GetLength(0); i++) {
+                List<Vector3> pts = new List<Vector3>();
+                for (int j = 0; j < cps.GetLength(1); j++) {
+                    pts.Add(XCPsUtil.perspectiveMap(cps[i, j]));
+                }
+                IGDPlotter.drawDashedPolyline3D(pts, lineScale, color);
+            }
+            
+            for (int j = 0; j < cps.GetLength(1); j++) {
+                List<Vector3> pts = new List<Vector3>();
+                for (int i = 0; i < cps.GetLength(0); i++) {
+                    pts.Add(XCPsUtil.perspectiveMap(cps[i, j]));
+                }
+                IGDPlotter.drawDashedPolyline3D(pts, lineScale, color);
+            }
         }
     }
 }

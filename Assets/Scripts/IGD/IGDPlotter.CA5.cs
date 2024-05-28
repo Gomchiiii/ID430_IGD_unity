@@ -3,7 +3,6 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using XAppObject;
-using Xgeom.NURBS;
 using XGeom.NURBS;
 
 // Write the code for the assignments in this file.
@@ -58,7 +57,7 @@ namespace IGD {
             int samplenum = 1000;
             for (int j = 0; j <= samplenum; j++) {
                 double u = us + (double)j / samplenum * (ue - us);
-                double[,] dN = XBspline.calcAllDerivBasisFns(order, u, p, U);
+                double[,] dN = XBSpline.calcAllDerivBasisFns(order, u, p, U);
 
                 //B-spline basis function. 
                 double dN0 = dN[0, i];

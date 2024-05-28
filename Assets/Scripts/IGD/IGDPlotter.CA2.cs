@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using XAppObject;
-using Xgeom.NURBS;
 using XGeom.NURBS;
 
 

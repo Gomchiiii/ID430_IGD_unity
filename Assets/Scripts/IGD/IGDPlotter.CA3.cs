@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.VFX;
 using XAppObject;
-using Xgeom.NURBS;
 using XGeom.NURBS;
 
 // Write the code for the assignments in this file.

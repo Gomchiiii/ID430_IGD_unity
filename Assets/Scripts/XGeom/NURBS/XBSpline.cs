@@ -5,7 +5,7 @@ using UnityEditorInternal;
 using UnityEngine;
 
 namespace XGeom.NURBS {
-    public class XBspline {
+    public class XBSpline {
         public static double calcBasisFnByDefinition(double u, int i, int p, double[] U) {
             int m = U.Length - 1;
             int n = m - p - 1;
@@ -14,8 +14,10 @@ namespace XGeom.NURBS {
                 return 0;
             }
 
+
+
             if (p == 0) {
-                if (u >= U[i]  && u < U[i + 1]) {
+                if (XKnotVectorUtil.findKnotSpanIndex(u, U, p) == i) {
                     return 1;
                 } else {
                     return 0;
@@ -69,7 +71,7 @@ namespace XGeom.NURBS {
             int n = m - p - 1;
             double[] N = new double[n + 1];
             int i = XKnotVectorUtil.findKnotSpanIndex(u, U, p);
-            double[] M = XBspline.calcNonZeroBasisFnsByDynamicProg(u, i, p, U);
+            double[] M = XBSpline.calcNonZeroBasisFnsByDynamicProg(u, i, p, U);
 
 
             for (int j = i - p, k = 0; j <= i; j++, k++) {

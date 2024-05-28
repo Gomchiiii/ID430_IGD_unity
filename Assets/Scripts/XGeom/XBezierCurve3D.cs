@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Xgeom.NURBS;
+using XGeom.NURBS;
 
 namespace XGeom.NURBS {
     public class XBezierCurve3D : XParametricCurve3D {
@@ -86,7 +86,7 @@ namespace XGeom.NURBS {
             return C;
         }
 
-        private Vector3 calcPosByDeCasteljouAlgo(double u) {
+        public Vector3 calcPosByDeCasteljouAlgo(double u) {
             int n = this.mDeg;
 
             //The temp array first contains all the control points in Vector4.

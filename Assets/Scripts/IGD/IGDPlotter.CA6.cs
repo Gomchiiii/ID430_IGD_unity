@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using XAppObject;
-using Xgeom.NURBS;
 using XGeom.NURBS;
 
 // Write the code for the assignments in this file.
@@ -38,13 +36,13 @@ namespace IGD {
             }
 
             //plot
-            IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(cps).ToList(), 0.7f);
-            foreach (Vector4 v in cps) {
-                IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(v));
-            }
+            IGDPlotter.drawControlPoints(cps, 1f, Color.black);
+            IGDPlotter.drawControlPolygon(cps, 1f, Color.black);
 
             //plot the rational bezier cuve
             IGDPlotter.drawPolyline3D(rbcvPts, 1f);
+
+
         }
 
         // CA6-2: Implement code to represent an -th degree NURBS curve by 
@@ -88,16 +86,23 @@ namespace IGD {
             for (int i = 0; i <= 100; i++) {
                 double u = us + (double)i / 100.0 * (ue - us);
                 rbcvPts.Add(rbcv.calcPos(u));
+
+                if (u == 0 || u == 1 || u == 2 || u == 3) {
+                    IGDPlotter.writeFormula3D("C(" + u.ToString() + ")", 
+                        XCPsUtil.perspectiveMap(rbcv.calcPos(u)) + Vector3.down * 0.1f,
+                        0.7f, Color.red);
+                }
             }
 
             //plot
-            IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(cps).ToList(), 0.7f);
-            foreach (Vector4 v in cps) {
-                IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(v));
-            }
-
+            IGDPlotter.drawControlPoints(cps, 1f, Color.black);
+            IGDPlotter.drawControlPolygon(cps, 1f, Color.black);
+            IGDPlotter.drawKnotVector(U, 1500f);
+            
             //plot the rational bezier cuve
             IGDPlotter.drawPolyline3D(rbcvPts, 1f);
+
+
         }
 
         // CA6-3: Implement code to create an arc on the xy-plane as 
@@ -123,27 +128,30 @@ namespace IGD {
             int n = 2 * narcs; //  n + 1 contol points 
             Vector4[] Pw = new Vector4[n + 1];
             double[] U = new double[Pw.Length + deg + 1];
-            float w1 = Mathf.Cos(dtheta / 2.0f * Mathf.Deg2Rad); //base angle
+            float w1 = radius * Mathf.Cos(dtheta / 2.0f * Mathf.Deg2Rad); //base angle
 
    
             Vector4 P0 = new Vector4(radius * Mathf.Cos(startDegree * Mathf.Deg2Rad),
-                radius * Mathf.Sin(startDegree * Mathf.Deg2Rad), 0f, Mathf.Cos(startDegree * Mathf.Deg2Rad));
+                radius * Mathf.Sin(startDegree * Mathf.Deg2Rad), 0f, Math.Abs(Mathf.Cos(startDegree * Mathf.Deg2Rad)));
             Vector4 T0 = new Vector4( - radius * Mathf.Sin(startDegree * Mathf.Deg2Rad),
                 radius * Mathf.Cos(startDegree * Mathf.Deg2Rad), 0f, 1f);
             Pw[0] = P0;
+         
 
             int index = 0;
             float angle = startDegree;
 
-            for (int i = 1; i < narcs; i++) {
+            for (int i = 1; i <= narcs; i++) {
                 angle += dtheta;
                 Vector4 P2 = new Vector4(radius * Mathf.Cos(angle * Mathf.Deg2Rad),
-                    radius * Mathf.Sin(angle * Mathf.Deg2Rad), 0f, Mathf.Cos(angle * Mathf.Deg2Rad));
+                    radius * Mathf.Sin(angle * Mathf.Deg2Rad), 0f, Math.Abs(Mathf.Cos(angle * Mathf.Deg2Rad)));
                 Pw[index + 2] = P2;
-                Vector4 T2 = new Vector4(-radius * Mathf.Sin(angle * Mathf.Deg2Rad),
+                Vector4 T2 = new Vector4(- radius * Mathf.Sin(angle * Mathf.Deg2Rad),
                     radius * Mathf.Cos(angle * Mathf.Deg2Rad), 0f, 1f);
                 Vector4 P1 = IntersetctLines(P0, T0, P2, T2);
-                Pw[index + 1] = P1 * w1;
+                Pw[index + 1] = new Vector4(P1.x * w1, P1.y * w1, 0f, 1f);
+                Debug.Log(w1);
+
                 index = index + 2;
                 if (i < narcs) {
                     P0 = P2;
@@ -184,10 +192,10 @@ namespace IGD {
             }
 
             //plot
-            IGDPlotter.drawDashedPolyline3D(XCPsUtil.perspectiveMap(Pw).ToList(), 0.7f);
-            foreach (Vector4 v in Pw) {
-                IGDPlotter.drawDot3D(XCPsUtil.perspectiveMap(v));
-            }
+            IGDPlotter.drawControlPoints(Pw, 1f, Color.black);
+            IGDPlotter.drawControlPolygon(Pw, 1f, Color.black);
+            IGDPlotter.drawKnotVector(U, 1500f);
+
 
             //plot the rational bezier cuve
             IGDPlotter.drawPolyline3D(rbcvPts, 1f);
@@ -196,7 +204,7 @@ namespace IGD {
             //Debug.Log(narcs); 
         }
 
-        private static Vector4 IntersetctLines(Vector3 p0, Vector3 t0, Vector3 p2, Vector3 t2) {
+        private static Vector4 IntersetctLines(Vector4 p0, Vector4 t0, Vector4 p2, Vector4 t2) {
             float A1 = t0.y - p0.y;
             float B1 = p0.x - t0.x;
             float A2 = t2.y - p2.y;
@@ -219,6 +227,69 @@ namespace IGD {
         // at several points on an arbitrary NURBS curve, along with the curve, 
         // knot vector, control points, weights, and control polygon.
         public static void CA6_4() {
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.right, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.forward, 0.7f);
+            IGDPlotter.drawArrow3D(Vector3.zero, Vector3.up, 0.7f);
+
+            //Draw an arc using rational Bezier curve
+
+            Vector4[] cps = new Vector4[3];
+            cps[0] = new Vector4(1f, 0f, 0f, 1f);
+            cps[1] = new Vector4(1f * (float)Math.Cos(45 * Mathf.Deg2Rad),
+                1f * (float)Math.Cos(45 * Mathf.Deg2Rad),
+                0f * (float)Math.Cos(45 * Mathf.Deg2Rad), (float)Math.Cos(45 * Mathf.Deg2Rad));
+            cps[2] = new Vector4(0f, 1f, 0f, 1f);
+
+            int deg = 2;
+            double[] U = { 0, 0, 0, 1, 1, 1 };
+            float us = 0f;
+            float ue = 1f;
+
+            XBSplineCurve3D rbcv = new XBSplineCurve3D(deg, U, cps);
+            List<Vector3> rbcvPts = new List<Vector3>();
+            for (int i = 0; i <= 100; i++) {
+                double u = us + (double)i / 100.0 * (ue - us);
+                rbcvPts.Add(rbcv.calcPos(u));
+            }
+
+            //plot
+            IGDPlotter.drawControlPoints(cps, 1f, Color.black);
+            IGDPlotter.drawControlPolygon(cps, 1f, Color.black);
+
+            //plot the rational bezier cuve
+            IGDPlotter.drawPolyline3D(rbcvPts, 1f);
+
+            //draw first derivatevs
+            Vector3 firstDerAtStart = rbcv.calcDer(1, 0.0);
+            IGDPlotter.drawArrow3D(rbcv.calcPos(0.0), rbcv.calcPos(0.0) + firstDerAtStart, 1f, Color.blue);
+            IGDPlotter.writeFormula3D("C'(0)", rbcv.calcPos(0.0) + firstDerAtStart, 1f, Color.blue);
+
+            Vector3 firstDerAtHalf = rbcv.calcDer(1, 0.5);
+            IGDPlotter.drawArrow3D(rbcv.calcPos(0.5), rbcv.calcPos(0.5) + firstDerAtHalf, 1f, Color.blue);
+            IGDPlotter.writeFormula3D("C'(0.5)", rbcv.calcPos(0.5) + firstDerAtHalf, 1f, Color.blue);
+
+            Vector3 firstDerAtEnd = rbcv.calcDer(1, 1.0);
+            IGDPlotter.drawArrow3D(rbcv.calcPos(1.0), rbcv.calcPos(1.0) + firstDerAtEnd, 1f, Color.blue);
+            IGDPlotter.writeFormula3D("C'(1)", rbcv.calcPos(1.0) + firstDerAtEnd, 1f, Color.blue);
+
+
+            //draw second derivatevs
+            Vector3 secondDerAtStart = rbcv.calcDer(2, 0.0);
+            IGDPlotter.drawArrow3D(rbcv.calcPos(0.0), rbcv.calcPos(0.0) + secondDerAtStart, 1f, Color.red);
+            IGDPlotter.writeFormula3D("C''(0)", rbcv.calcPos(0.0) + secondDerAtStart, 1f, Color.red);
+
+            Vector3 secondDerAtHalf = rbcv.calcDer(2, 0.5);
+            IGDPlotter.drawArrow3D(rbcv.calcPos(0.5), rbcv.calcPos(0.5) + secondDerAtHalf, 1f, Color.red);
+            IGDPlotter.writeFormula3D("C''(0.5)", rbcv.calcPos(0.5) + secondDerAtHalf, 1f, Color.red);
+
+            Vector3 secondDerAtEnd = rbcv.calcDer(2, 1.0);
+            IGDPlotter.drawArrow3D(rbcv.calcPos(1.0), rbcv.calcPos(1.0) + secondDerAtEnd, 1f, Color.red);
+            IGDPlotter.writeFormula3D("C''(1)", rbcv.calcPos(1.0) + secondDerAtEnd, 1f, Color.red);
+
+            IGDPlotter.drawKnotVector(U, 1500f);
+
+
         }
     }
+    
 }

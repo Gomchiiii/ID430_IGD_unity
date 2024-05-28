@@ -4,8 +4,8 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using XAppObject;
-using Xgeom.NURBS;
 using XGeom.NURBS;
+using XGeom.NURBS.CurveFit;
 
 
 // Write the code for the assignments in this file.
@@ -213,7 +213,7 @@ namespace IGD {
             }
 
             for (int i = usSample; i <= ueSample; i++) {
-                double[] BasisFnsValues = XBspline.calcBasisFns((double)i / (double)unitLength, p, knotVector);
+                double[] BasisFnsValues = XBSpline.calcBasisFns((double)i / (double)unitLength, p, knotVector);
                 for (int j = 0; j < BasisFnsValues.Length; j++) {
                     double basisFnsValue = BasisFnsValues[j];
                     basisFnsPts[j].Add(new Vector2(i, (float)basisFnsValue * unitLength));
@@ -250,7 +250,7 @@ namespace IGD {
             int samplenum = 1000;
             for (int j = 0; j <= samplenum; j++) {
                 double u = us + (double)j / samplenum * (ue - us);
-                double[,] dN = XBspline.calcAllDerivBasisFns(order, u, p, U);
+                double[,] dN = XBSpline.calcAllDerivBasisFns(order, u, p, U);
 
                 //Plot
                 double dN0 = dN[0, i];
@@ -422,6 +422,161 @@ namespace IGD {
             IGDPlotter.drawArrow3D(rbcv.calcPos(1.0), rbcv.calcPos(1.0) + secondDerAtEnd, 1f, Color.red);
 
 
+        }
+
+        //public static void W08_drawKnotInsertedCurve() {
+        //    ///Draw axes
+        //    IGDPlotter.draw3DAxes(5f, 5f, 5f, 5f, Color.black, "x", "y", "", 4f);
+
+        //    //Define the Bspline curve
+        //    int p = 3;
+        //    double[] U = new double[] {
+        //        0, 0, 0, 0, 1, 2, 3, 4, 5, 5, 5, 5
+        //    };
+
+        //    Vector4[] Pw = new Vector4[] {
+        //        new Vector4(-6f, -1f, 0f, 1f),
+        //        new Vector4(-5f, 2f, 0f, 1f),
+        //        new Vector4(-3f, 3f, 0f, 1f),
+        //        new Vector4(-1f, 2f, 0f, 1f),
+        //        new Vector4(0f, 0f, 0f, 1f),
+        //        new Vector4(3f, 1f, 0f, 1f),
+        //        new Vector4(3f, 3f, 0f, 1f),
+        //        new Vector4(1f, 5f, 0f, 1f),
+        //    };
+
+        //    XBSplineCurve3D cvBef = new XBSplineCurve3D(p, U, Pw);
+
+        //    // draw
+        //    IGDPlotter.drawParametricCurve3D(cvBef, 300, 5f, Color.black);
+        //    IGDPlotter.drawControlPoints(Pw, 8F, Color.black);
+        //    IGDPlotter.drawControlPolygon(Pw, 5f, Color.black);
+        //    IGDPlotter.lableControlPoints(Pw, 3f, Color.black, "\\mathbf{P}", Vector3.down * 0.3f);
+
+        //    //insert knots
+        //    double u = 2.3;
+        //    int r = 3;
+        //   // XBSplineCurve3D cvAft = XKnotInsertion.createKnotInsertedCurve(u, r, cvBef);
+        //    Vector4[] Qw = cvAft.getCPs();
+
+        //    IGDPlotter.drawParametricCurve3D(cvAft, 300, 5f, Color.red);
+        //    IGDPlotter.drawControlPoints(Qw, 8F, Color.red);
+        //    IGDPlotter.drawControlPolygon(Qw, 5f, Color.red);
+        //    IGDPlotter.lableControlPoints(Qw, 3f, Color.red, "\\mathbf{Q}", Vector3.down * 0.3f);
+        //}
+
+        public static void W09_drawInvertedPoint() {
+            ///Draw axes
+            IGDPlotter.draw3DAxes(5f, 5f, 5f, 5f, Color.black, "x", "y", "", 4f);
+
+            //Define the Bspline curve
+            int p = 3;
+            double[] U = new double[] {
+                0, 0, 0, 0, 1, 2, 3, 4, 5, 5, 5, 5
+            };
+
+            Vector4[] Pw = new Vector4[] {
+                new Vector4(-6f, -1f, 0f, 1f),
+                new Vector4(-5f, 2f, 0f, 1f),
+                new Vector4(-3f, 3f, 0f, 1f),
+                new Vector4(-1f, 2f, 0f, 1f),
+                new Vector4(0f, 0f, 0f, 1f),
+                new Vector4(3f, 1f, 0f, 1f),
+                new Vector4(3f, 3f, 0f, 1f),
+                new Vector4(1f, 5f, 0f, 1f),
+            };
+
+            XBSplineCurve3D cv = new XBSplineCurve3D(p, U, Pw);
+
+            // draw
+            IGDPlotter.drawParametricCurve3D(cv, 300, 5f, Color.black);
+            IGDPlotter.drawControlPoints(Pw, 8F, Color.black);
+            IGDPlotter.drawControlPolygon(Pw, 5f, Color.black);
+            //IGDPlotter.lableControlPoints(Pw, 3f, Color.black, "\\mathbf{P}", Vector3.down * 0.3f);
+
+            //insert knots
+            Vector3 nearPoint = new Vector3(2f, 1f, 0f);
+            IGDPlotter.drawDot3D(nearPoint, 10f, Color.red);
+
+            double u = cv.calcParamAtPt(nearPoint);
+            Debug.Log(u);
+            IGDPlotter.drawDot3D(cv.calcPos(u), 10f, Color.blue);
+
+        }
+
+        public static void W09_drawInterPolatedCurve() {
+            //Draw Axes
+            IGDPlotter.draw3DAxes(5f, 5f, 5f, 5f, Color.black, "x", "y", "", 4f);
+
+            //consraint points 
+            Vector3[] pts = new Vector3[] {
+                new Vector3(0f, 0f, 0f),
+                new Vector3(3f, 4f, 0f),
+                new Vector3(-1f, 4f, 0f),
+                new Vector3(-4f, 0f, 0f),
+                new Vector3(-4f, -3f, 0f),
+            };
+
+            foreach (Vector3 pt in pts) {
+                IGDPlotter.drawDot3D(pt, 4f, Color.red);
+            }
+
+            XBSplineInterpolation curveInterpolation =
+                new XBSplineInterpolation(3, pts,
+                new XChordLengthParameterization(),
+                new XAveragingKnotVectorSelection());
+            curveInterpolation.fit();
+
+            foreach (double u in curveInterpolation.getParams()) {
+                Debug.Log(u);
+            }
+            //IGDPlotter.drawKnotVector(U)
+            IGDPlotter.drawParametricCurve3D(curveInterpolation.getFittedCv(), 100, 1f, Color.black);
+        }
+
+        public static void W10_drawBezierSurfac() {
+            //draw axes
+            IGDPlotter.draw3DAxes(5f, "x", "y", "z");
+
+            //define surface
+            int n = 3;
+            int m = 3;
+            Vector4[,] cps = new Vector4[n + 1, m + 1];
+            for (int i = 0; i <= n; i++) {
+                for (int j = 0; j <= m; j++) { 
+                    float x = i * 1f;
+                    float y = UnityEngine.Random.Range(0f, 2f);
+                    float z = j * 1f;
+                    Vector4 cp = new Vector4(x, y, z, 1f);
+                    cps[i, j] = cp;
+                }
+            }
+            XBezierSurface3D surface = new XBezierSurface3D(n, m, cps);
+
+            IGDPlotter.drawBezierSurface3D(surface);
+            IGDPlotter.drawControlPoints(cps, 1f, Color.blue);
+            IGDPlotter.drawControlNet(cps, 1f, Color.blue);
+            IGDPlotter.labelControlPoints(cps, 1f, Color.blue, "P", Vector3.up * 0.1f);
+
+            //Draw boundary curves
+            XBezierCurve3D cvUStart = surface.calcIsoCurve(0.0, XGeom.XParametricSurface3D.Dir.U);
+            XBezierCurve3D cvUEnd = surface.calcIsoCurve(1.0, XGeom.XParametricSurface3D.Dir.U);
+            XBezierCurve3D cvVStart = surface.calcIsoCurve(0.0, XGeom.XParametricSurface3D.Dir.V);
+            XBezierCurve3D cvVEnd = surface.calcIsoCurve(1.0, XGeom.XParametricSurface3D.Dir.V);
+
+            IGDPlotter.drawParametricCurve3D(cvUStart, cvUStart.getStartParam(), cvUStart.getEndParam(), 
+                100, 1f, Color.black);
+
+
+
+            //for (int i = 0; i <= 20; i++) {
+            //    for (int j = 0; j <= 20; j++) {
+            //        double u = i / 20.0;
+            //        double v = j / 20.0;
+            //        Vector3 pt = surface.calcPos(u, v);
+            //        IGDPlotter.drawDot3D(pt, 0.2f, Color.blue);
+            //    }
+            //}
         }
     }
 
